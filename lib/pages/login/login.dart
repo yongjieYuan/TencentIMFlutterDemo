@@ -479,8 +479,7 @@ class _LoginPageState extends State<LoginPage> {
   initSDK() async {
     V2TIMManager timManager = TencentImSDKPlugin.v2TIMManager;
     await timManager.initSDK(
-      // sdkAppID: 1400425583,
-      sdkAppID: 1400187352,
+      sdkAppID: Config.sdkappid,
       loglevel: LogLevel.V2TIM_LOG_DEBUG,
       listener: listener,
     );
