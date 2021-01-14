@@ -144,8 +144,8 @@ PODS:
   - tencent_im_sdk_plugin (1.0.5):
     - Flutter
     - HydraAsync
-    - TXIMSDK_Smart_iOS (= 5.1.125)
-  - TXIMSDK_Smart_iOS (5.1.125)
+    - TXIMSDK_Smart_iOS (= 5.1.129)
+  - TXIMSDK_Smart_iOS (5.1.129)
   - url_launcher (0.0.1):
     - Flutter
   - url_launcher_linux (0.0.1):
@@ -312,8 +312,8 @@ SPEC CHECKSUMS:
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
-  tencent_im_sdk_plugin: 49bb62188f06ec59d155aa208d31a2e193fd81e1
-  TXIMSDK_Smart_iOS: 7fe82ceb195965f95540cf428d33d622f420a183
+  tencent_im_sdk_plugin: e51d58d7aea4800c5acb0345b5173c705508bbe7
+  TXIMSDK_Smart_iOS: 23fa9150bace6d8dab8c49d69b6583ddb1a179db
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   url_launcher_linux: ac237cb7a8058736e4aae38bdbcc748a4b394cc0
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
