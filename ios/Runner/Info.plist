@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -27,12 +27,26 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
 	<key>NSCameraUsageDescription</key>
-	<string>YES</string>
+	<string>拍摄照片发送给对方，需要获取您的摄像头权限</string>
+	<key>NSContactsUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>YES</string>
+	<string>发送语音给对方，需要获取您的麦克风权限</string>
+	<key>NSMotionUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>YES</string>
+	<string>选择照片发送给对方，需要获取您的相册权限</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>App需要您的同意, 才能获取信息</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -52,20 +66,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	
-	<key>NSContactsUsageDescription</key>
-	<string>App需要您的同意, 才能获取信息</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App需要您的同意, 才能获取信息</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App需要您的同意, 才能获取信息</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>授权麦克风权限才能正常语音通话</string>
-	<key>NSMotionUsageDescription</key>
-	<string>App需要您的同意, 才能获取信息</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>App需要您的同意,才能访问相册</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>App需要您的同意, 才能获取信息</string>
 </dict>
 </plist>

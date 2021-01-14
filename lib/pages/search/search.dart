@@ -89,7 +89,7 @@ class Input extends StatelessWidget {
                 labelText: type == 1 ? '请输入用户userID' : '请输入群ID',
               ),
               onSubmitted: (s) {
-                addFriend(context, s);
+                addFriend(context, s.trim());
               },
             ),
           )

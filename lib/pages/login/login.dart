@@ -1,6 +1,8 @@
-import 'dart:io';
 import 'dart:ui';
+<<<<<<< HEAD
 // import 'package:device_info/device_info.dart';
+=======
+>>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
@@ -29,8 +31,12 @@ import 'package:tencent_im_sdk_plugin_example/provider/friend.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/friendApplication.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/groupApplication.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/user.dart';
+<<<<<<< HEAD
 import 'package:tencent_im_sdk_plugin_example/utils/GenerateTestUserSig.dart';
 import 'package:tencent_im_sdk_plugin_example/utils/config.dart';
+=======
+import 'package:tencent_im_sdk_plugin_example/utils/tools.dart';
+>>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
 // import 'package:tencent_tpns_oppo_push_plugin/enum/importance.dart';
 // import 'package:tencent_tpns_oppo_push_plugin/tencent_tpns_oppo_push_plugin.dart';
 // import 'package:tencent_tpns_vivo_push_plugin/tencent_tpns_vivo_push_plugin.dart';
@@ -57,7 +63,10 @@ class _LoginPageState extends State<LoginPage> {
     await initSDK();
     await islogin();
     // await toHomePage();
+<<<<<<< HEAD
     await setOfflinepush();
+=======
+>>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
   }
 
   offlinePushCallback(data) {
@@ -83,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+<<<<<<< HEAD
   setOfflinepush() async {
     if (Platform.isAndroid) {
       // DeviceInfoPlugin info = new DeviceInfoPlugin();
@@ -114,6 +124,8 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+=======
+>>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
   // initVivoPush() async {
   //   TencentTpnsVivoPushPlugin.initialize();
   //   String regId = await TencentTpnsVivoPushPlugin.getRegId();
@@ -175,9 +187,13 @@ class _LoginPageState extends State<LoginPage> {
       userSig: userSig,
     );
 
+<<<<<<< HEAD
     V2TimCallback data2 = await TencentImSDKPlugin.v2TIMManager
         .getAPNSManager()
         .setAPNS(businessID: 23945);
+=======
+    await Tools.setOfflinepush(context);
+>>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
 
     V2TimValueCallback<List<V2TimUserFullInfo>> infos = await TencentImSDKPlugin
         .v2TIMManager
@@ -236,6 +252,8 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           print("登录成功");
         }
+
+        await Tools.setOfflinepush(context);
 
         V2TimValueCallback<List<V2TimUserFullInfo>> infos =
             await TencentImSDKPlugin.v2TIMManager
@@ -351,6 +369,7 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           key = "group_${message.groupID}";
         }
+        print("conterkey_$key");
         Provider.of<CurrentMessageListModel>(context, listen: false)
             .addMessage(key, messageList);
       } catch (err) {
@@ -839,6 +858,9 @@ class _LoginFormState extends State<LoginForm> {
                           print('登录失败${data.desc}');
                           return;
                         }
+
+                        await Tools.setOfflinepush(context);
+
                         Future<SharedPreferences> _prefs =
                             SharedPreferences.getInstance();
                         SharedPreferences prefs = await _prefs;

@@ -127,9 +127,9 @@ PODS:
   - PromisesObjC (1.2.12)
   - Protobuf (3.14.0)
   - Regift (1.5.0)
-  - SDWebImage (5.10.1):
-    - SDWebImage/Core (= 5.10.1)
-  - SDWebImage/Core (5.10.1)
+  - SDWebImage (5.10.2):
+    - SDWebImage/Core (= 5.10.2)
+  - SDWebImage/Core (5.10.2)
   - shared_preferences (0.0.1):
     - Flutter
   - shared_preferences_linux (0.0.1):
@@ -144,8 +144,8 @@ PODS:
   - tencent_im_sdk_plugin (1.0.5):
     - Flutter
     - HydraAsync
-    - TXIMSDK_Smart_iOS (= 5.1.122)
-  - TXIMSDK_Smart_iOS (5.1.122)
+    - TXIMSDK_Smart_iOS (= 5.1.125)
+  - TXIMSDK_Smart_iOS (5.1.125)
   - url_launcher (0.0.1):
     - Flutter
   - url_launcher_linux (0.0.1):
@@ -305,15 +305,15 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Protobuf: 0cde852566359049847168e51bd1c690e0f70056
   Regift: d097afd401021f4f42b102ee125ceeb125a38caf
-  SDWebImage: f66a16b95183b92ed6b965ad21d33167bc07612d
+  SDWebImage: b969dcfc02c40a5da71eac0b03b8f1a0c794a86f
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
-  tencent_im_sdk_plugin: 5af62ba37f707f86ad897c4d14bbf12730b1cef3
-  TXIMSDK_Smart_iOS: 35b69ba617345b7902459892eddb1ceb32188ef2
+  tencent_im_sdk_plugin: 49bb62188f06ec59d155aa208d31a2e193fd81e1
+  TXIMSDK_Smart_iOS: 7fe82ceb195965f95540cf428d33d622f420a183
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   url_launcher_linux: ac237cb7a8058736e4aae38bdbcc748a4b394cc0
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
@@ -322,6 +322,6 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
 
-PODFILE CHECKSUM: c77891d140ff01bfacb5a93479745cb023500cfa
+PODFILE CHECKSUM: e8d6c4d21b934bbacc8258245cea1c04adbe96d0
 
 COCOAPODS: 1.9.3
