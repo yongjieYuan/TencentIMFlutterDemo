@@ -1,8 +1,6 @@
+import 'dart:io';
 import 'dart:ui';
-<<<<<<< HEAD
 // import 'package:device_info/device_info.dart';
-=======
->>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
@@ -31,12 +29,8 @@ import 'package:tencent_im_sdk_plugin_example/provider/friend.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/friendApplication.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/groupApplication.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/user.dart';
-<<<<<<< HEAD
 import 'package:tencent_im_sdk_plugin_example/utils/GenerateTestUserSig.dart';
 import 'package:tencent_im_sdk_plugin_example/utils/config.dart';
-=======
-import 'package:tencent_im_sdk_plugin_example/utils/tools.dart';
->>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
 // import 'package:tencent_tpns_oppo_push_plugin/enum/importance.dart';
 // import 'package:tencent_tpns_oppo_push_plugin/tencent_tpns_oppo_push_plugin.dart';
 // import 'package:tencent_tpns_vivo_push_plugin/tencent_tpns_vivo_push_plugin.dart';
@@ -63,10 +57,7 @@ class _LoginPageState extends State<LoginPage> {
     await initSDK();
     await islogin();
     // await toHomePage();
-<<<<<<< HEAD
     await setOfflinepush();
-=======
->>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
   }
 
   offlinePushCallback(data) {
@@ -92,7 +83,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-<<<<<<< HEAD
   setOfflinepush() async {
     if (Platform.isAndroid) {
       // DeviceInfoPlugin info = new DeviceInfoPlugin();
@@ -124,8 +114,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-=======
->>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
   // initVivoPush() async {
   //   TencentTpnsVivoPushPlugin.initialize();
   //   String regId = await TencentTpnsVivoPushPlugin.getRegId();
@@ -178,35 +166,31 @@ class _LoginPageState extends State<LoginPage> {
   // }
 
   // TODO: 调试代码，上线删除
-  toHomePage() async {
-    const userId = "lexuslin";
-    const userSig =
-        "eJwtzE8LgjAcxvH3smthv003-0CHwIpo0CG7dSm24pfOpjMxoveeqcfn88D3QzJ59Fpdk4QwD8h82Kh02eANBy5093IFltPnVH6xFhVJaABAo9DnbHx0Z7HWvXPOGQCM2qD5mwAR0ihi4VTBe59W6Xof680OjTPPoArUtfJnPEMpVwdGY3ifFyexfeRpK92SfH8q-zJ8";
-    V2TimCallback data = await TencentImSDKPlugin.v2TIMManager.login(
-      userID: userId,
-      userSig: userSig,
-    );
+  // toHomePage() async {
+  //   const userId = "lexuslin";
+  //   const userSig =
+  //       "eJwtzE8LgjAcxvH3smthv003-0CHwIpo0CG7dSm24pfOpjMxoveeqcfn88D3QzJ59Fpdk4QwD8h82Kh02eANBy5093IFltPnVH6xFhVJaABAo9DnbHx0Z7HWvXPOGQCM2qD5mwAR0ihi4VTBe59W6Xof680OjTPPoArUtfJnPEMpVwdGY3ifFyexfeRpK92SfH8q-zJ8";
+  //   V2TimCallback data = await TencentImSDKPlugin.v2TIMManager.login(
+  //     userID: userId,
+  //     userSig: userSig,
+  //   );
 
-<<<<<<< HEAD
-    V2TimCallback data2 = await TencentImSDKPlugin.v2TIMManager
-        .getAPNSManager()
-        .setAPNS(businessID: 23945);
-=======
-    await Tools.setOfflinepush(context);
->>>>>>> 9ebda0191793b3840013a182d9f0503557fc2cfc
+  //   V2TimCallback data2 = await TencentImSDKPlugin.v2TIMManager
+  //       .getAPNSManager()
+  //       .setAPNS(businessID: 23945);
 
-    V2TimValueCallback<List<V2TimUserFullInfo>> infos = await TencentImSDKPlugin
-        .v2TIMManager
-        .getUsersInfo(userIDList: [userId]);
-    Provider.of<UserModel>(context, listen: false).setInfo(infos.data[0]);
+  //   V2TimValueCallback<List<V2TimUserFullInfo>> infos = await TencentImSDKPlugin
+  //       .v2TIMManager
+  //       .getUsersInfo(userIDList: [userId]);
+  //   Provider.of<UserModel>(context, listen: false).setInfo(infos.data[0]);
 
-    Navigator.push(
-      context,
-      new MaterialPageRoute(
-        builder: (context) => HomePage(),
-      ),
-    );
-  }
+  //   Navigator.push(
+  //     context,
+  //     new MaterialPageRoute(
+  //       builder: (context) => HomePage(),
+  //     ),
+  //   );
+  // }
 
   islogin() async {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -253,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
           print("登录成功");
         }
 
-        await Tools.setOfflinepush(context);
+        // await Tools.setOfflinepush(context);
 
         V2TimValueCallback<List<V2TimUserFullInfo>> infos =
             await TencentImSDKPlugin.v2TIMManager
@@ -859,7 +843,7 @@ class _LoginFormState extends State<LoginForm> {
                           return;
                         }
 
-                        await Tools.setOfflinepush(context);
+                        // await Tools.setOfflinepush(context);
 
                         Future<SharedPreferences> _prefs =
                             SharedPreferences.getInstance();
