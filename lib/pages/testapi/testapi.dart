@@ -167,8 +167,7 @@ class _TestApiState extends State<TestApi> {
   createGroup() async {
     V2TimValueCallback<String> res = await TencentImSDKPlugin.v2TIMManager
         .getGroupManager()
-        .createGroup(
-            groupID: "g1234", groupName: "g1234", groupType: "Public");
+        .createGroup(groupID: "g1234", groupName: "g1234", groupType: "Public");
     print(res.toJson());
   }
 
@@ -292,7 +291,7 @@ class _TestApiState extends State<TestApi> {
   deleteFriendApplication() async {
     V2TimCallback res = await TencentImSDKPlugin.v2TIMManager
         .getFriendshipManager()
-        .deleteFriendApplication(userID: "lexuslin3", type: ["1"]);
+        .deleteFriendApplication(userID: "lexuslin3", type: 1);
     print(res.toJson());
   }
 
