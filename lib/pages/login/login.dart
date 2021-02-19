@@ -103,14 +103,15 @@ class _LoginPageState extends State<LoginPage> {
       //     break;
       // }
     } else {
-      V2TimCallback res = await TencentImSDKPlugin.v2TIMManager
-          .getAPNSManager()
-          .setAPNS(businessID: 23945);
-      if (res.code == 0) {
-        Toast.show("设置推送成功", context);
-      } else {
-        Toast.show("设置推送失败${res.desc}", context);
-      }
+      //去掉推送
+      // V2TimCallback res = await TencentImSDKPlugin.v2TIMManager
+      //     .getAPNSManager()
+      //     .setAPNS(businessID: 23945);
+      // if (res.code == 0) {
+      //   Toast.show("设置推送成功", context);
+      // } else {
+      //   Toast.show("设置推送失败${res.desc}", context);
+      // }
     }
   }
 

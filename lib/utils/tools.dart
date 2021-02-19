@@ -4,7 +4,6 @@
 //   return Color(int.parse('111111', radix: 16)).withAlpha(255);
 // }
 
-
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
@@ -44,16 +43,16 @@ class Tools {
       connector.token.addListener(() async {
         print('Token ${connector.token.value}');
 
-        V2TimCallback res = await TencentImSDKPlugin.v2TIMManager.getAPNSManager().setAPNS(
-          businessID: isReleaseMode ? 24438 : 23945,
-          token: connector.token.value
-        ); 
-          
-        if (res.code == 0) {
-          Toast.show("设置推送成功", context);
-        } else {
-          Toast.show("设置推送失败${res.desc}", context);
-        }
+        // V2TimCallback res = await TencentImSDKPlugin.v2TIMManager.getAPNSManager().setAPNS(
+        //   businessID: isReleaseMode ? 24438 : 23945,
+        //   token: connector.token.value
+        // );
+
+        // if (res.code == 0) {
+        //   Toast.show("设置推送成功", context);
+        // } else {
+        //   Toast.show("设置推送失败${res.desc}", context);
+        // }
       });
     }
   }
