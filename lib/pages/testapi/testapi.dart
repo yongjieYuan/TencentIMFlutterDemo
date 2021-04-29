@@ -280,11 +280,11 @@ class _TestApiState extends State<TestApi> {
   }
 
   checkFriend() async {
-    V2TimValueCallback<V2TimFriendCheckResult> res = await TencentImSDKPlugin
-        .v2TIMManager
-        .getFriendshipManager()
-        .checkFriend("lexuslin3", 1);
-    print(res.toJson());
+    // V2TimValueCallback<V2TimFriendCheckResult> res = await TencentImSDKPlugin
+    //     .v2TIMManager
+    //     .getFriendshipManager()
+    //     .checkFriend(List.from(['lexuslin3']), 1);
+    // print(res.toJson());
   }
 
   // type?

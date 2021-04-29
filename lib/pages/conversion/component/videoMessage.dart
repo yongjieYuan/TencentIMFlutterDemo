@@ -76,7 +76,7 @@ class VideoMessageState extends State<VideoMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return _controller.value.initialized
+    return _controller.value.isInitialized
         ? Container(
             child: Stack(
               children: [
