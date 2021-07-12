@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
 import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class FileMessage extends StatelessWidget {
   final V2TimMessage message;
@@ -11,12 +11,13 @@ class FileMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        Toast.show("下载功能，业务可自行实现", context);
+        Utils.toast("下载功能，业务可自行实现");
       },
       child: Container(
         color: CommonColors.getWitheColor(),
         child: Row(
-          textDirection: message.isSelf ? TextDirection.rtl : TextDirection.ltr,
+          textDirection:
+              message.isSelf! ? TextDirection.rtl : TextDirection.ltr,
           children: [
             Expanded(
               child: Container(
@@ -25,7 +26,7 @@ class FileMessage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      message.fileElem.fileName,
+                      message.fileElem!.fileName!,
                       style: TextStyle(
                         height: 1.5,
                         fontSize: 12,
@@ -33,7 +34,7 @@ class FileMessage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${message.fileElem.fileSize} KB",
+                      "${message.fileElem!.fileSize} KB",
                       style: TextStyle(
                         height: 1.5,
                         fontSize: 12,

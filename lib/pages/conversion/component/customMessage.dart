@@ -13,7 +13,7 @@ class CustomMessage extends StatefulWidget {
 }
 
 class CustomMessageState extends State<CustomMessage> {
-  V2TimMessage message;
+  V2TimMessage? message;
   @override
   void initState() {
     this.message = widget.message;
@@ -22,9 +22,9 @@ class CustomMessageState extends State<CustomMessage> {
 
   Widget showMessage() {
     Widget res;
-    String data = message.customElem.data;
+    String? data = message!.customElem!.data;
     try {
-      var version = json.decode(data)['version'];
+      var version = json.decode(data!)['version'];
       String text = json.decode(data)['text'];
       String link = json.decode(data)['link'];
       if (version == 4) {
@@ -60,11 +60,11 @@ class CustomMessageState extends State<CustomMessage> {
         }
       } else {
         res = Text(
-          '自定义消息未解析成功 ${data}',
+          '自定义消息未解析成功 $data',
         );
       }
     } catch (err) {
-      res = Text('自定义消息解析失败 ${data}');
+      res = Text('自定义消息解析失败 $data');
     }
 
     return res;

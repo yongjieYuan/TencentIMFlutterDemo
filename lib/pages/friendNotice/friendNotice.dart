@@ -14,7 +14,7 @@ import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/friendApplication.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/groupApplication.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class NewFriendOrGroupNotice extends StatefulWidget {
   final int type;
@@ -34,7 +34,7 @@ class ApplicationItem extends StatelessWidget {
             .refuseFriendApplication(
                 type: application.type, userID: application.userID);
     if (res.code == 0) {
-      Toast.show("拒绝成功", context);
+      Utils.toast("拒绝成功");
       getFriendApplication(context);
       Navigator.pop(context);
     } else {
@@ -52,7 +52,7 @@ class ApplicationItem extends StatelessWidget {
               responseType: 1, //加双向好友
             );
     if (res.code == 0) {
-      Toast.show("添加成功", context);
+      Utils.toast("添加成功");
       getFriendApplication(context);
       Navigator.pop(context);
     } else {
@@ -66,13 +66,13 @@ class ApplicationItem extends StatelessWidget {
             .getFriendshipManager()
             .getFriendApplicationList();
     if (data.code == 0) {
-      print("dangqianshenqing${data.data.friendApplicationList.length}");
-      if (data.data.friendApplicationList.length > 0) {
+      print("dangqianshenqing${data.data!.friendApplicationList!.length}");
+      if (data.data!.friendApplicationList!.length > 0) {
         Provider.of<FriendApplicationModel>(context, listen: false)
-            .setFriendApplicationResult(data.data.friendApplicationList);
+            .setFriendApplicationResult(data.data!.friendApplicationList);
       } else {
         Provider.of<FriendApplicationModel>(context, listen: false)
-            .setFriendApplicationResult(new List<V2TimFriendApplication>());
+            .setFriendApplicationResult(List.empty(growable: true));
       }
     }
   }
@@ -157,13 +157,13 @@ class GroupApplicationItem extends StatelessWidget {
         .refuseGroupApplication(
           groupID: application.groupID,
           reason: "",
-          fromUser: application.fromUser,
-          toUser: application.toUser,
-          addTime: application.addTime,
+          fromUser: application.fromUser!,
+          toUser: application.toUser!,
+          addTime: application.addTime!,
           type: application.type,
         );
     if (res.code == 0) {
-      Toast.show("拒绝成功", context);
+      Utils.toast("拒绝成功");
       getGroupApplicationList(context);
       back(context);
     } else {
@@ -176,17 +176,17 @@ class GroupApplicationItem extends StatelessWidget {
         .getGroupManager()
         .acceptGroupApplication(
           groupID: application.groupID,
-          toUser: application.toUser,
-          fromUser: application.fromUser,
+          toUser: application.toUser!,
+          fromUser: application.fromUser!,
           addTime: application.addTime,
           type: application.type,
         );
     if (res.code == 0) {
-      Toast.show("添加成功", context);
+      Utils.toast("添加成功");
       getGroupApplicationList(context);
       back(context);
     } else {
-      Toast.show("加群失败 ${res.desc}", context);
+      Utils.toast("加群失败 ${res.desc}");
     }
     print("同意加群${res.code}");
   }
@@ -202,12 +202,12 @@ class GroupApplicationItem extends StatelessWidget {
             .getGroupManager()
             .getGroupApplicationList();
     if (res.code == 0) {
-      if (res.data.groupApplicationList.length > 0) {
+      if (res.data!.groupApplicationList!.length > 0) {
         Provider.of<GroupApplicationModel>(context, listen: false)
-            .setGroupApplicationResult(res.data.groupApplicationList);
+            .setGroupApplicationResult(res.data!.groupApplicationList);
       } else {
         Provider.of<GroupApplicationModel>(context, listen: false)
-            .setGroupApplicationResult(new List<V2TimGroupApplication>());
+            .setGroupApplicationResult(new List.empty(growable: true));
       }
     } else {
       print("获取加群申请失败${res.desc}");
@@ -336,7 +336,7 @@ class GroupApplicationItem extends StatelessWidget {
 }
 
 class NewFriendOrGroupNoticeState extends State<NewFriendOrGroupNotice> {
-  int type;
+  int? type;
   void initState() {
     this.type = widget.type;
     super.initState();
@@ -354,7 +354,7 @@ class NewFriendOrGroupNoticeState extends State<NewFriendOrGroupNotice> {
   }
 
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     List<V2TimFriendApplication> applicationList =
         Provider.of<FriendApplicationModel>(context).friendApplicationList;
     List<V2TimGroupApplication> groupApplicationList =

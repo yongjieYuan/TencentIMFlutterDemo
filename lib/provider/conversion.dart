@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 
 class ConversionModel with ChangeNotifier, DiagnosticableTreeMixin {
-  List<V2TimConversation> _conversionList = new List<V2TimConversation>();
+  List<V2TimConversation> _conversionList = List.empty(growable: true);
   get conversionList => _conversionList;
   setConversionList(List<V2TimConversation> newList) {
     newList.forEach((element) {
@@ -19,8 +19,10 @@ class ConversionModel with ChangeNotifier, DiagnosticableTreeMixin {
         _conversionList.add(element);
       }
     });
-    _conversionList.sort((left, right) =>
-        right.lastMessage.timestamp.compareTo(left.lastMessage.timestamp));
+    try {
+      _conversionList.sort((left, right) => right.lastMessage!.timestamp!
+          .compareTo(left.lastMessage!.timestamp!));
+    } catch (err) {}
     notifyListeners();
     return _conversionList;
   }
@@ -32,7 +34,7 @@ class ConversionModel with ChangeNotifier, DiagnosticableTreeMixin {
   }
 
   clear() {
-    _conversionList = new List<V2TimConversation>();
+    _conversionList = List.empty(growable: true);
     notifyListeners();
     return _conversionList;
   }

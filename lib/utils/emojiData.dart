@@ -863,43 +863,43 @@ class EmojiItem extends StatelessWidget {
     this.type = type;
     this.close = close;
   }
-  String name;
-  int unicode;
-  String toUser;
-  int type;
-  Function close;
+  String? name;
+  int? unicode;
+  String? toUser;
+  int? type;
+  Function? close;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
         print("表情touser$toUser");
-        V2TimValueCallback<V2TimMessage> sendRes;
+        V2TimValueCallback<V2TimMessage>? sendRes;
         if (type == 1) {
           sendRes = await TencentImSDKPlugin.v2TIMManager.sendC2CTextMessage(
-              text: String.fromCharCode(unicode), userID: toUser);
+              text: String.fromCharCode(unicode!), userID: toUser!);
         } else if (type == 2) {
           sendRes = await TencentImSDKPlugin.v2TIMManager.sendGroupTextMessage(
-            text: String.fromCharCode(unicode),
-            groupID: toUser,
+            text: String.fromCharCode(unicode!),
+            groupID: toUser!,
             priority: 0,
           );
         }
-        if (sendRes.code == 0) {
+        if (sendRes!.code == 0) {
           String key = (type == 1 ? "c2c_$toUser" : "group_$toUser");
           print("key $key");
-          List<V2TimMessage> list = new List<V2TimMessage>();
-          list.add(sendRes.data);
+          List<V2TimMessage> list = List.empty(growable: true);
+          list.add(sendRes.data!);
           Provider.of<CurrentMessageListModel>(context, listen: false)
               .addMessage(key, list);
           print('发送成功');
-          close();
+          close!();
         } else {
           print('发送失败${sendRes.desc}');
         }
       },
       child: Container(
         child: Text(
-          String.fromCharCode(unicode),
+          String.fromCharCode(unicode!),
           style: TextStyle(
             fontSize: 26,
           ),

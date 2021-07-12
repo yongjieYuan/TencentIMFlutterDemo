@@ -5,7 +5,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class BlackList extends StatefulWidget {
   @override
@@ -18,16 +18,16 @@ class BlackListState extends State<BlackList> {
     getBlackList();
   }
 
-  List<V2TimFriendInfo> blackList = new List<V2TimFriendInfo>();
+  List<V2TimFriendInfo> blackList = new List.empty(growable: true);
   getBlackList() async {
     V2TimValueCallback<List<V2TimFriendInfo>> res = await TencentImSDKPlugin
         .v2TIMManager
         .getFriendshipManager()
         .getBlackList();
     if (res.code == 0) {
-      List<V2TimFriendInfo> list = res.data;
+      List<V2TimFriendInfo>? list = res.data;
       setState(() {
-        blackList = list;
+        blackList = list!;
       });
     } else {
       print("获取黑名单失败 ${res.desc} ${res.code} ");
@@ -73,11 +73,11 @@ class BlackListItem extends StatelessWidget {
   final V2TimFriendInfo info;
   getNick() {
     if (info.friendRemark == null || info.friendRemark == '') {
-      if (info.userProfile.nickName == null ||
-          info.userProfile.nickName == '') {
+      if (info.userProfile!.nickName == null ||
+          info.userProfile!.nickName == '') {
         return info.userID;
       } else {
-        return info.userProfile.nickName;
+        return info.userProfile!.nickName;
       }
     } else {
       return info.friendRemark;
@@ -90,8 +90,8 @@ class BlackListItem extends StatelessWidget {
             .getFriendshipManager()
             .deleteFromBlackList(userIDList: [info.userID]);
     if (res.code == 0) {
-      if (res.data[0].resultCode == 0) {
-        Toast.show("操作成功", context);
+      if (res.data![0].resultCode == 0) {
+        Utils.toast("操作成功");
         Navigator.pop(context);
       }
     }
@@ -121,10 +121,10 @@ class BlackListItem extends StatelessWidget {
                   width: 30,
                   height: 30,
                   radius: 0,
-                  avtarUrl: info.userProfile.faceUrl == '' ||
-                          info.userProfile.faceUrl == null
+                  avtarUrl: info.userProfile!.faceUrl == '' ||
+                          info.userProfile!.faceUrl == null
                       ? 'images/logo.png'
-                      : info.userProfile.faceUrl,
+                      : info.userProfile!.faceUrl,
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 10),

@@ -12,7 +12,7 @@ import 'package:tencent_im_sdk_plugin_example/provider/conversion.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class Message extends StatefulWidget {
   State<StatefulWidget> createState() => MessageState();
@@ -28,15 +28,18 @@ class MessageState extends State<Message> {
         .v2TIMManager
         .getConversationManager()
         .getConversationList(count: 100, nextSeq: 0);
-    print("当前会话长度${data.data.conversationList.length}");
+    print("当前会话长度${data.data!.conversationList!.length}");
+
+    List<V2TimConversation>? newList =
+        data.data!.conversationList!.cast<V2TimConversation>();
     Provider.of<ConversionModel>(
       context,
       listen: false,
-    ).setConversionList(data.data.conversationList);
+    ).setConversionList(newList);
   }
 
   Widget build(BuildContext context) {
-    List<V2TimConversation> conversionList = Provider.of<ConversionModel>(
+    List<V2TimConversation>? conversionList = Provider.of<ConversionModel>(
       context,
       listen: true,
     ).conversionList;
@@ -53,7 +56,7 @@ class MessageState extends State<Message> {
 
     return ListView(
       children: conversionList.map((e) {
-        if (e.lastMessage.msgID == '') {
+        if (e.lastMessage!.msgID == '') {
           return Container();
         }
         return Container(
@@ -63,13 +66,13 @@ class MessageState extends State<Message> {
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.25,
             child: ConversionItem(
-              name: e.showName,
-              faceUrl: e.faceUrl,
-              lastMessage: e.lastMessage,
-              unreadCount: e.unreadCount,
-              type: e.type,
+              name: e.showName!,
+              faceUrl: e.faceUrl!,
+              lastMessage: e.lastMessage!,
+              unreadCount: e.unreadCount!,
+              type: e.type!,
               conversationID: e.conversationID,
-              userID: e.userID,
+              userID: e.userID!,
             ),
             secondaryActions: <Widget>[
               IconSlideAction(
@@ -84,11 +87,11 @@ class MessageState extends State<Message> {
                       )
                       .then((value) {
                     if (value.code == 0) {
-                      Toast.show("删除成功", context);
+                      Utils.toast("删除成功");
                       Provider.of<ConversionModel>(context, listen: false)
                           .removeConversionByConversationId(e.conversationID);
                     } else {
-                      Toast.show("删除失败 ${value.code} ${value.desc}", context);
+                      Utils.toast("删除失败 ${value.code} ${value.desc}");
                     }
                   });
                 },
@@ -112,24 +115,24 @@ class ConversionItem extends StatelessWidget {
     this.conversationID,
     this.userID,
   });
-  final String name;
-  final String faceUrl;
-  final V2TimMessage lastMessage;
-  final int unreadCount;
-  final int type;
-  final String conversationID;
-  final String userID;
+  final String? name;
+  final String? faceUrl;
+  final V2TimMessage? lastMessage;
+  final int? unreadCount;
+  final int? type;
+  final String? conversationID;
+  final String? userID;
   test1(context) {
     Navigator.push(
       context,
       new MaterialPageRoute(
-        builder: (context) => Conversion(conversationID),
+        builder: (context) => Conversion(conversationID!),
       ),
     );
   }
 
   String formatTime() {
-    int timestamp = lastMessage.timestamp * 1000;
+    int timestamp = lastMessage!.timestamp! * 1000;
     DateTime time = DateTime.fromMillisecondsSinceEpoch(timestamp);
     DateTime now = DateTime.now();
 
@@ -140,8 +143,7 @@ class ConversionItem extends StatelessWidget {
     }
   }
 
-  String getFaceUrl() {
-    print(type);
+  String? getFaceUrl() {
     return (faceUrl == null || faceUrl == '')
         ? type == 1
             ? 'images/person.png'
@@ -195,7 +197,7 @@ class ConversionItem extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              name == null ? "xx" : name,
+                              name == null ? "xx" : name!,
                               style: TextStyle(
                                 color: hexToColor("111111"),
                                 fontSize: 18,
@@ -228,35 +230,34 @@ class ConversionItem extends StatelessWidget {
                         children: [
                           Expanded(
                               child: Text(
-                            lastMessage.elemType == 1
-                                ? lastMessage.textElem == null
-                                    ? ''
-                                    : lastMessage.textElem.text
-                                : lastMessage.elemType ==
+                            lastMessage!.elemType ==
+                                    MessageElemType.V2TIM_ELEM_TYPE_TEXT
+                                ? lastMessage!.textElem!.text!
+                                : lastMessage!.elemType ==
                                         MessageElemType
                                             .V2TIM_ELEM_TYPE_GROUP_TIPS
                                     ? '【系统消息】'
-                                    : lastMessage.elemType ==
+                                    : lastMessage!.elemType ==
                                             MessageElemType
                                                 .V2TIM_ELEM_TYPE_SOUND
                                         ? '【语音消息】'
-                                        : lastMessage.elemType ==
+                                        : lastMessage!.elemType ==
                                                 MessageElemType
                                                     .V2TIM_ELEM_TYPE_CUSTOM
                                             ? '【自定义消息】'
-                                            : lastMessage.elemType ==
+                                            : lastMessage!.elemType ==
                                                     MessageElemType
                                                         .V2TIM_ELEM_TYPE_IMAGE
                                                 ? '【图片】'
-                                                : lastMessage.elemType ==
+                                                : lastMessage!.elemType ==
                                                         MessageElemType
                                                             .V2TIM_ELEM_TYPE_VIDEO
                                                     ? '【视频】'
-                                                    : lastMessage.elemType ==
+                                                    : lastMessage!.elemType ==
                                                             MessageElemType
                                                                 .V2TIM_ELEM_TYPE_FILE
                                                         ? '【文件】'
-                                                        : lastMessage
+                                                        : lastMessage!
                                                                     .elemType ==
                                                                 MessageElemType
                                                                     .V2TIM_ELEM_TYPE_FACE
@@ -268,7 +269,7 @@ class ConversionItem extends StatelessWidget {
                             ),
                           )),
                           Container(
-                            child: unreadCount > 0
+                            child: unreadCount! > 0
                                 ? PhysicalModel(
                                     color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(9),
@@ -284,7 +285,7 @@ class ConversionItem extends StatelessWidget {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            unreadCount > 99
+                                            unreadCount! > 99
                                                 ? '...'
                                                 : unreadCount.toString(),
                                             textAlign: TextAlign.center,

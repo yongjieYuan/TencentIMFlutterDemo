@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_video_compress/flutter_video_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
@@ -13,7 +12,9 @@ import 'package:tencent_im_sdk_plugin_example/common/hexToColor.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/component/advanceMsgItem.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/dataInterface/advanceMsgList.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
-import 'package:toast/toast.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 // import 'package:video_player/video_player.dart';
 
 class AdvanceMsg extends StatelessWidget {
@@ -22,7 +23,6 @@ class AdvanceMsg extends StatelessWidget {
   final int type;
   final picker = ImagePicker();
   // VideoPlayerController _controller;
-  final _flutterVideoCompress = FlutterVideoCompress();
 
   sendVideoMsg(context) async {
     final video = await picker.getVideo(
@@ -32,38 +32,42 @@ class AdvanceMsg extends StatelessWidget {
     if (video == null) {
       return;
     }
+    String tempPath = (await getTemporaryDirectory()).path;
 
-    final thumbnailFile =
-        await _flutterVideoCompress.getThumbnailWithFile(video.path,
-            quality: 100, // default(100)
-            position: -1 // default(-1)
-            );
-    print("thumbnailFile $thumbnailFile");
+    String? thumbnail = await VideoThumbnail.thumbnailFile(
+      video: video.path,
+      thumbnailPath: tempPath,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth:
+          128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+      quality: 25,
+    );
 
     V2TimValueCallback<V2TimMessage> res = await TencentImSDKPlugin.v2TIMManager
         .getMessageManager()
         .sendVideoMessage(
           videoFilePath: video.path,
-          receiver: type == 1 ? toUser : null,
-          groupID: type == 2 ? toUser : null,
+          receiver: type == 1 ? toUser : "",
+          groupID: type == 2 ? toUser : "",
           type: 'mp4',
-          snapshotPath: thumbnailFile.path,
+          snapshotPath: thumbnail == null ? "" : thumbnail,
           onlineUserOnly: false,
+          duration: 10,
         );
 
     if (res.code == 0) {
       String key = (type == 1 ? "c2c_$toUser" : "group_$toUser");
-      V2TimMessage msg = res.data;
+      V2TimMessage? msg = res.data;
       // 添加新消息
 
       try {
         Provider.of<CurrentMessageListModel>(context, listen: false)
-            .addOneMessageIfNotExits(key, msg);
+            .addOneMessageIfNotExits(key, msg!);
       } catch (err) {
         print("发生错误");
       }
     } else {
-      Toast.show("发送失败 ${res.code} ${res.desc}", context);
+      Utils.toast("发送失败 ${res.code} ${res.desc}");
       print(res.desc);
     }
   }
@@ -80,28 +84,28 @@ class AdvanceMsg extends StatelessWidget {
         .getMessageManager()
         .sendImageMessage(
           imagePath: path,
-          receiver: type == 1 ? toUser : null,
-          groupID: type == 2 ? toUser : null,
+          receiver: type == 1 ? toUser : "",
+          groupID: type == 2 ? toUser : "",
           onlineUserOnly: false,
         );
 
     if (res.code == 0) {
       String key = (type == 1 ? "c2c_$toUser" : "group_$toUser");
-      V2TimMessage msg = res.data;
+      V2TimMessage? msg = res.data;
       // 添加新消息
       try {
         Provider.of<CurrentMessageListModel>(context, listen: false)
-            .addOneMessageIfNotExits(key, msg);
+            .addOneMessageIfNotExits(key, msg!);
       } catch (err) {
         print("发生错误");
       }
     } else {
-      Toast.show("发送失败 ${res.code} ${res.desc}", context);
+      Utils.toast("发送失败 ${res.code} ${res.desc}");
     }
   }
 
   sendCustomData(context) async {
-    print("herree ${toUser}");
+    print("herree $toUser");
     V2TimValueCallback<V2TimMessage> res = await TencentImSDKPlugin.v2TIMManager
         .getMessageManager()
         .sendCustomMessage(
@@ -111,16 +115,16 @@ class AdvanceMsg extends StatelessWidget {
             "link": "https://cloud.tencent.com/document/product/269/3794",
             "version": 4
           }),
-          receiver: type == 1 ? toUser : null,
-          groupID: type == 2 ? toUser : null,
+          receiver: type == 1 ? toUser : "",
+          groupID: type == 2 ? toUser : "",
         );
     if (res.code == 0) {
       String key = (type == 1 ? "c2c_$toUser" : "group_$toUser");
-      List<V2TimMessage> list = new List<V2TimMessage>();
-      V2TimMessage msg = res.data;
+      List<V2TimMessage> list = new List.empty(growable: true);
+      V2TimMessage? msg = res.data;
       // 添加新消息
 
-      list.add(msg);
+      list.add(msg!);
 
       try {
         Provider.of<CurrentMessageListModel>(context, listen: false)
@@ -130,33 +134,33 @@ class AdvanceMsg extends StatelessWidget {
       }
     } else {
       print("发送失败 ${res.code} ${res.desc} herree");
-      Toast.show("发送失败 ${res.code} ${res.desc}", context);
+      Utils.toast("发送失败 ${res.code} ${res.desc}");
     }
   }
 
   sendFile(context) async {
-    FilePickerResult result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       print("选择成功${result.files.single.path}");
-      String path = result.files.single.path;
+      String? path = result.files.single.path;
       V2TimValueCallback<V2TimMessage> res = await TencentImSDKPlugin
           .v2TIMManager
           .getMessageManager()
           .sendFileMessage(
-            fileName: path.split('/').last,
+            fileName: path!.split('/').last,
             filePath: path,
-            receiver: type == 1 ? toUser : null,
-            groupID: type == 2 ? toUser : null,
+            receiver: type == 1 ? toUser : "",
+            groupID: type == 2 ? toUser : "",
             onlineUserOnly: false,
           );
       if (res.code == 0) {
         String key = (type == 1 ? "c2c_$toUser" : "group_$toUser");
-        List<V2TimMessage> list = new List<V2TimMessage>();
-        V2TimMessage msg = res.data;
+        List<V2TimMessage> list = new List.empty(growable: true);
+        V2TimMessage? msg = res.data;
         // 添加新消息
 
-        list.add(msg);
+        list.add(msg!);
         try {
           Provider.of<CurrentMessageListModel>(context, listen: false)
               .addMessage(key, list);
@@ -164,14 +168,14 @@ class AdvanceMsg extends StatelessWidget {
           print("发生错误");
         }
       } else {
-        Toast.show("发送失败 ${res.code} ${res.desc}", context);
+        Utils.toast("发送失败 ${res.code} ${res.desc}");
       }
     } else {
       // User canceled the picker
     }
   }
 
-  Future<int> openPanel(context) {
+  Future<int?> openPanel(context) {
     close() {
       Navigator.of(context).pop();
     }
@@ -251,7 +255,7 @@ class AdvanceMsg extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    print("toUser ${toUser} type ${type} herree");
+    print("toUser $toUser type $type herree");
     return Container(
       width: 56,
       height: 56,

@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class GroupProfilePanel extends StatelessWidget {
   GroupProfilePanel(this.userInfo);
-  final V2TimGroupInfoResult userInfo;
+  final V2TimGroupInfoResult? userInfo;
   getGroupName() {
-    return userInfo.groupInfo.groupName == null ||
-            userInfo.groupInfo.groupName == ''
-        ? userInfo.groupInfo.groupID
-        : userInfo.groupInfo.groupName;
+    return userInfo!.groupInfo!.groupName == null ||
+            userInfo!.groupInfo!.groupName == ''
+        ? userInfo!.groupInfo!.groupID
+        : userInfo!.groupInfo!.groupName;
   }
 
   @override
@@ -46,7 +47,7 @@ class GroupProfilePanel extends StatelessWidget {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertName(userInfo.groupInfo.groupID);
+                                return AlertName(userInfo!.groupInfo!.groupID);
                               });
                         },
                       ),
@@ -61,7 +62,7 @@ class GroupProfilePanel extends StatelessWidget {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertIntro(userInfo.groupInfo.groupID);
+                                return AlertIntro(userInfo!.groupInfo!.groupID);
                               });
                         },
                       ),
@@ -78,10 +79,10 @@ class GroupProfilePanel extends StatelessWidget {
                 Container(
                   width: 80,
                   child: Avatar(
-                    avtarUrl: userInfo.groupInfo.faceUrl == null ||
-                            userInfo.groupInfo.faceUrl == ''
+                    avtarUrl: userInfo!.groupInfo!.faceUrl == null ||
+                            userInfo!.groupInfo!.faceUrl == ''
                         ? 'images/logo.png'
-                        : userInfo.groupInfo.faceUrl,
+                        : userInfo!.groupInfo!.faceUrl,
                     width: 80,
                     height: 80,
                     radius: 9.6,
@@ -107,7 +108,7 @@ class GroupProfilePanel extends StatelessWidget {
                         Container(
                           height: 23,
                           child: Text(
-                            '群ID：${userInfo.groupInfo.groupID}',
+                            '群ID：${userInfo!.groupInfo!.groupID}',
                             style: TextStyle(
                               fontSize: 14,
                               color: CommonColors.getTextWeakColor(),
@@ -117,7 +118,7 @@ class GroupProfilePanel extends StatelessWidget {
                         Container(
                           height: 23,
                           child: Text(
-                            '群简介：${userInfo.groupInfo.introduction}',
+                            '群简介：${userInfo!.groupInfo!.introduction}',
                             style: TextStyle(
                               fontSize: 14,
                               color: CommonColors.getTextWeakColor(),
@@ -153,7 +154,7 @@ class AlertIntro extends StatefulWidget {
 }
 
 class AlertDialogAlertIntroState extends State<AlertIntro> {
-  String name;
+  String? name;
   TextEditingController controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -168,26 +169,30 @@ class AlertDialogAlertIntroState extends State<AlertIntro> {
         },
       ),
       actions: <Widget>[
-        new FlatButton(
+        new ElevatedButton(
           child: new Text('取消'),
           onPressed: () {
             Navigator.of(context).pop();
             print('取消');
           },
         ),
-        new FlatButton(
+        new ElevatedButton(
           child: new Text('确定'),
           onPressed: () {
             TencentImSDKPlugin.v2TIMManager
                 .getGroupManager()
                 .setGroupInfo(
-                  introduction: name,
-                  groupID: widget.groupId,
+                  info: V2TimGroupInfo.fromJson(
+                    {
+                      "introduction": name,
+                      "groupID": widget.groupId,
+                    },
+                  ),
                 )
                 .then((value) {
               if (value.code == 0) {
                 Navigator.of(context).pop();
-                Toast.show('修改成功', context);
+                Utils.toast('修改成功');
                 Navigator.of(context).pop();
               }
             });
@@ -199,7 +204,7 @@ class AlertDialogAlertIntroState extends State<AlertIntro> {
 }
 
 class AlertDialogState extends State<AlertName> {
-  String name;
+  String? name;
   TextEditingController controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -214,26 +219,27 @@ class AlertDialogState extends State<AlertName> {
         },
       ),
       actions: <Widget>[
-        new FlatButton(
+        new ElevatedButton(
           child: new Text('取消'),
           onPressed: () {
             Navigator.of(context).pop();
             print('取消');
           },
         ),
-        new FlatButton(
+        new ElevatedButton(
           child: new Text('确定'),
           onPressed: () {
             TencentImSDKPlugin.v2TIMManager
                 .getGroupManager()
                 .setGroupInfo(
-                  groupName: name,
-                  groupID: widget.groupId,
-                )
+                    info: V2TimGroupInfo.fromJson({
+                  "groupName": name,
+                  "groupID": widget.groupId,
+                }))
                 .then((value) {
               if (value.code == 0) {
                 Navigator.of(context).pop();
-                Toast.show('修改成功', context);
+                Utils.toast('修改成功');
                 Navigator.of(context).pop();
               }
             });

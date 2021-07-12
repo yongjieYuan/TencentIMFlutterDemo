@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_member_filter_type.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
@@ -8,7 +7,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart'
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class AllMembers extends StatefulWidget {
   final V2TimGroupInfoResult groupInfo;
@@ -19,31 +18,31 @@ class AllMembers extends StatefulWidget {
 }
 
 class AllMembersState extends State<AllMembers> {
-  List<V2TimGroupMemberFullInfo> memberList;
+  late List<V2TimGroupMemberFullInfo?>? memberList;
 
   void initState() {
     super.initState();
     getAllgroupMember();
-    Toast.show("长按可进行群成员踢出", context);
+    Utils.toast("长按可进行群成员踢出");
   }
 
   getAllgroupMember() {
     TencentImSDKPlugin.v2TIMManager
         .getGroupManager()
         .getGroupMemberList(
-          groupID: widget.groupInfo.groupInfo.groupID,
+          groupID: widget.groupInfo.groupInfo!.groupID,
           filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
           nextSeq: 0, //第一次拉填0
         )
         .then((res) {
-      List<V2TimGroupMemberFullInfo> list = res.data.memberInfoList;
+      List<V2TimGroupMemberFullInfo?>? list = res.data!.memberInfoList;
       setState(() {
         memberList = list;
       });
     });
   }
 
-  Future<bool> showDeleteConfirmDialog(context, userID) {
+  Future<bool?> showDeleteConfirmDialog(context, userID) {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -51,11 +50,11 @@ class AllMembersState extends State<AllMembers> {
           title: Text("提示"),
           content: Text("确定将该人退出群组吗?"),
           actions: <Widget>[
-            FlatButton(
+            ElevatedButton(
               child: Text("取消"),
               onPressed: () => Navigator.of(context).pop(), // 关闭对话框
             ),
-            FlatButton(
+            ElevatedButton(
               child: Text("确定"),
               onPressed: () {
                 //关闭对话框并返回true
@@ -63,13 +62,13 @@ class AllMembersState extends State<AllMembers> {
                 TencentImSDKPlugin.v2TIMManager
                     .getGroupManager()
                     .kickGroupMember(
-                  groupID: widget.groupInfo.groupInfo.groupID,
+                  groupID: widget.groupInfo.groupInfo!.groupID,
                   memberList: [userID],
                 ).then((res) {
                   if (res.code == 0) {
                     getAllgroupMember();
                   } else {
-                    Toast.show("踢人出群失败 ${res.code} ${res.desc}", context);
+                    Utils.toast("踢人出群失败 ${res.code} ${res.desc}");
                   }
                 });
               },
@@ -84,10 +83,9 @@ class AllMembersState extends State<AllMembers> {
   Widget build(BuildContext context) {
     if (memberList == null) {
       return Center(
-        child: Loading(
-          indicator: BallPulseIndicator(),
-          size: 100.0,
-          color: CommonColors.getThemeColor(),
+        child: LoadingIndicator(
+          indicatorType: Indicator.lineSpinFadeLoader,
+          color: Colors.black26,
         ),
       );
     }
@@ -105,11 +103,11 @@ class AllMembersState extends State<AllMembers> {
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
             ),
-            children: memberList
+            children: memberList!
                 .map(
                   (e) => GestureDetector(
                     onLongPress: () {
-                      showDeleteConfirmDialog(context, e.userID);
+                      showDeleteConfirmDialog(context, e!.userID);
                     },
                     child: Container(
                       child: Column(
@@ -117,15 +115,13 @@ class AllMembersState extends State<AllMembers> {
                           Avatar(
                             width: 50,
                             height: 50,
-                            avtarUrl: e.faceUrl == null || e.faceUrl == ''
+                            avtarUrl: e!.faceUrl == null || e.faceUrl == ''
                                 ? 'images/logo.png'
                                 : e.faceUrl,
                             radius: 0,
                           ),
                           Text(
-                            e.nickName == '' || e.nickName == null
-                                ? e.userID
-                                : e.nickName,
+                            e.userID,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           )

@@ -20,7 +20,7 @@ class ProfileState extends State<Profile> {
   int type = 0; // 0 1 2,0=>自己打开个人中心，1=>单聊资料卡，2=>群聊资料卡
 
   Widget build(BuildContext context) {
-    V2TimUserFullInfo info = Provider.of<UserModel>(context).info;
+    V2TimUserFullInfo? info = Provider.of<UserModel>(context).info;
     // print("个人信息${info.toJson()}");
     if (info == null) {
       return Container();

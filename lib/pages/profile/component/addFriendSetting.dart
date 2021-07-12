@@ -5,7 +5,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/TextWithCommonStyle.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class AddFriendSetting extends StatefulWidget {
   AddFriendSetting(this.userInfo);
@@ -14,8 +14,8 @@ class AddFriendSetting extends StatefulWidget {
 }
 
 class AddFriendSettingState extends State<AddFriendSetting> {
-  bool status;
-  V2TimUserFullInfo userInfo;
+  bool? status;
+  V2TimUserFullInfo? userInfo;
 
   void initState() {
     userInfo = widget.userInfo;
@@ -39,17 +39,20 @@ class AddFriendSettingState extends State<AddFriendSetting> {
               textDirection: TextDirection.rtl,
               children: [
                 CupertinoSwitch(
-                  value: status,
+                  value: status!,
                   onChanged: (data) async {
                     V2TimCallback res =
                         await TencentImSDKPlugin.v2TIMManager.setSelfInfo(
-                      allowType: data ? 1 : 0,
+                      userFullInfo: V2TimUserFullInfo.fromJson(
+                        {
+                          "allowType": data ? 1 : 0,
+                        },
+                      ),
                     );
-                    Toast.show("修改成功", context,
-                        duration: Toast.LENGTH_SHORT, gravity: Toast.CENTER);
+                    Utils.toast("修改成功");
                     if (res.code == 0) {
                       setState(() {
-                        status = !status;
+                        status = !status!;
                       });
                     }
                   },

@@ -4,23 +4,23 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 //自己查看自己的资料
 class ProfilePanel extends StatelessWidget {
   ProfilePanel(this.userInfo, this.isSelf);
-  final V2TimUserFullInfo userInfo;
+  final V2TimUserFullInfo? userInfo;
   final bool isSelf;
   getSelfSignature() {
-    if (userInfo.selfSignature == '' || userInfo.selfSignature == null) {
+    if (userInfo!.selfSignature == '' || userInfo!.selfSignature == null) {
       return "";
     } else {
-      return userInfo.selfSignature;
+      return userInfo!.selfSignature;
     }
   }
 
   hasNickName() {
-    return !(userInfo.nickName == '' || userInfo.nickName == null);
+    return !(userInfo!.nickName == '' || userInfo!.nickName == null);
   }
 
   @override
@@ -69,9 +69,10 @@ class ProfilePanel extends StatelessWidget {
                 Container(
                   width: 80,
                   child: Avatar(
-                    avtarUrl: userInfo.faceUrl == null || userInfo.faceUrl == ''
-                        ? 'images/logo.png'
-                        : userInfo.faceUrl,
+                    avtarUrl:
+                        userInfo!.faceUrl == null || userInfo!.faceUrl == ''
+                            ? 'images/logo.png'
+                            : userInfo!.faceUrl,
                     width: 80,
                     height: 80,
                     radius: 9.6,
@@ -87,10 +88,10 @@ class ProfilePanel extends StatelessWidget {
                         Container(
                           height: 34,
                           child: Text(
-                            (userInfo.nickName == null ||
-                                    userInfo.nickName == '')
-                                ? userInfo.userID
-                                : userInfo.nickName,
+                            (userInfo!.nickName == null ||
+                                    userInfo!.nickName == '')
+                                ? "${userInfo!.userID}"
+                                : "${userInfo!.nickName}",
                             style: TextStyle(
                               fontSize: 24,
                               color: CommonColors.getTextBasicColor(),
@@ -100,7 +101,7 @@ class ProfilePanel extends StatelessWidget {
                         Container(
                           height: 23,
                           child: Text(
-                            '用户ID：${userInfo.userID}',
+                            '用户ID：${userInfo!.userID}',
                             style: TextStyle(
                               fontSize: 14,
                               color: CommonColors.getTextWeakColor(),
@@ -139,7 +140,7 @@ class Alert extends StatefulWidget {
 }
 
 class AlertDialogState extends State<Alert> {
-  String name;
+  String? name;
   TextEditingController controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -154,22 +155,28 @@ class AlertDialogState extends State<Alert> {
         },
       ),
       actions: <Widget>[
-        new FlatButton(
+        new ElevatedButton(
           child: new Text('取消'),
           onPressed: () {
             Navigator.of(context).pop();
             print('取消');
           },
         ),
-        new FlatButton(
+        new ElevatedButton(
           child: new Text('确定'),
           onPressed: () {
             TencentImSDKPlugin.v2TIMManager
-                .setSelfInfo(nickName: name)
+                .setSelfInfo(
+              userFullInfo: V2TimUserFullInfo.fromJson(
+                {
+                  "nickName": name,
+                },
+              ),
+            )
                 .then((value) {
               if (value.code == 0) {
                 Navigator.of(context).pop();
-                Toast.show('修改成功', context);
+                Utils.toast('修改成功');
               }
             });
             print('确定');

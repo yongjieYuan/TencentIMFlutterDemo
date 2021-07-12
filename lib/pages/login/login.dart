@@ -3,9 +3,15 @@ import 'dart:ui';
 // import 'package:device_info/device_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimAdvancedMsgListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimConversationListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimFriendshipListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimGroupListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSignalingListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSimpleMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_message_progress.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_application.dart';
 
@@ -31,11 +37,11 @@ import 'package:tencent_im_sdk_plugin_example/provider/groupApplication.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/user.dart';
 import 'package:tencent_im_sdk_plugin_example/utils/GenerateTestUserSig.dart';
 import 'package:tencent_im_sdk_plugin_example/utils/config.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 // import 'package:tencent_tpns_oppo_push_plugin/enum/importance.dart';
 // import 'package:tencent_tpns_oppo_push_plugin/tencent_tpns_oppo_push_plugin.dart';
 // import 'package:tencent_tpns_vivo_push_plugin/tencent_tpns_vivo_push_plugin.dart';
 // import 'package:tencent_tpns_xiaomi_push_plugin/tencent_tpns_xiaomi_push_plugin.dart';
-import 'package:toast/toast.dart';
 
 var timLogo = AssetImage("images/logo.png");
 
@@ -46,7 +52,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isinit = false;
-  String oppoRegId;
+  String? oppoRegId;
 
   void initState() {
     super.initState();
@@ -55,9 +61,12 @@ class _LoginPageState extends State<LoginPage> {
 
   init() async {
     await initSDK();
-    await islogin();
+    setState(() {
+      isinit = true;
+    });
+    // await islogin();
     // await toHomePage();
-    await setOfflinepush();
+    // await setOfflinepush();
   }
 
   offlinePushCallback(data) {
@@ -71,12 +80,12 @@ class _LoginPageState extends State<LoginPage> {
             .setOfflinePushConfig(businessID: 7005, token: data['data'])
             .then((res) {
           if (res.code == 0) {
-            Toast.show("设置推送成功", context);
+            Utils.toast("设置推送成功");
           } else {
-            Toast.show("设置推送失败${res.desc}", context);
+            Utils.toast("设置推送失败${res.desc}");
           }
         }).catchError((err) {
-          Toast.show("设置推送失败$err", context);
+          Utils.toast("设置推送失败$err");
           print("设置推送失败$err");
         });
       }
@@ -108,9 +117,9 @@ class _LoginPageState extends State<LoginPage> {
       //     .getAPNSManager()
       //     .setAPNS(businessID: 23945);
       // if (res.code == 0) {
-      //   Toast.show("设置推送成功", context);
+      //   Utils.toast("设置推送成功");
       // } else {
-      //   Toast.show("设置推送失败${res.desc}", context);
+      //   Utils.toast("设置推送失败${res.desc}");
       // }
     }
   }
@@ -134,16 +143,16 @@ class _LoginPageState extends State<LoginPage> {
   //         .setOfflinePushConfig(businessID: 5218, token: regId)
   //         .then((res) {
   //       if (res.code == 0) {
-  //         Toast.show("设置推送成功", context);
+  //         Utils.toast("设置推送成功");
   //       } else {
-  //         Toast.show("设置推送失败${res.desc}", context);
+  //         Utils.toast("设置推送失败${res.desc}");
   //       }
   //     }).catchError((err) {
-  //       Toast.show("设置推送失败$err", context);
+  //       Utils.toast("设置推送失败$err");
   //       print("设置推送失败$err");
   //     });
   //   } else {
-  //     Toast.show("获取小米regid失败", context);
+  //     Utils.toast("获取小米regid失败");
   //   }
   // }
 
@@ -166,7 +175,6 @@ class _LoginPageState extends State<LoginPage> {
   //   }
   // }
 
-  // TODO: 调试代码，上线删除
   // toHomePage() async {
   //   const userId = "lexuslin";
   //   const userSig =
@@ -196,14 +204,11 @@ class _LoginPageState extends State<LoginPage> {
   islogin() async {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     SharedPreferences prefs = await _prefs;
-    String token = prefs.getString("token");
-    String sessionId = prefs.getString("sessionId");
-    String phone = prefs.getString("phone");
-    String code = prefs.getString("code");
-    print("token$token");
-    print("sessionId$sessionId");
-    print("phone$phone");
-    print("code$code");
+    String? token = prefs.getString("token");
+    String? sessionId = prefs.getString("sessionId");
+    String? phone = prefs.getString("phone");
+    String? code = prefs.getString("code");
+
     if (token != null && sessionId != null && phone != null && code != null) {
       Dio dio = new Dio();
       Response response = await dio.get(
@@ -244,14 +249,21 @@ class _LoginPageState extends State<LoginPage> {
             await TencentImSDKPlugin.v2TIMManager
                 .getUsersInfo(userIDList: [userId]);
         if (infos.code == 0) {
-          if (infos.data[0].nickName == null ||
-              infos.data[0].faceUrl == null ||
-              infos.data[0].nickName == '' ||
-              infos.data[0].faceUrl == '') {
-            await TencentImSDKPlugin.v2TIMManager
-                .setSelfInfo(nickName: userId, faceUrl: avatar);
+          if (infos.data![0].nickName == null ||
+              infos.data![0].faceUrl == null ||
+              infos.data![0].nickName == '' ||
+              infos.data![0].faceUrl == '') {
+            await TencentImSDKPlugin.v2TIMManager.setSelfInfo(
+              userFullInfo: V2TimUserFullInfo.fromJson(
+                {
+                  "nickName": userId,
+                  "faceUrl": avatar,
+                },
+              ),
+            );
           }
-          Provider.of<UserModel>(context, listen: false).setInfo(infos.data[0]);
+          Provider.of<UserModel>(context, listen: false)
+              .setInfo(infos.data![0]);
         } else {}
         try {
           Navigator.of(context).push(
@@ -271,173 +283,147 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  listener(data) async {
-    print("init sdk listener emit");
-    print(data.type);
-    if (data.type == 'onSelfInfoUpdated') {
-      //自己信息更新，从新获取自己的信息；
-      V2TimValueCallback<String> usercallback =
-          await TencentImSDKPlugin.v2TIMManager.getLoginUser();
-      V2TimValueCallback<List<V2TimUserFullInfo>> infos =
-          await TencentImSDKPlugin.v2TIMManager
-              .getUsersInfo(userIDList: [usercallback.data]);
-      if (infos.code == 0) {
-        Provider.of<UserModel>(context, listen: false).setInfo(infos.data[0]);
-      }
-    }
-    if (data.type == 'onKickedOffline') {
-      // 被踢下线
-      // 清除本地缓存，回到登录页TODO
-      try {
-        Provider.of<ConversionModel>(context, listen: false).clear();
-        Provider.of<UserModel>(context, listen: false).clear();
-        Provider.of<CurrentMessageListModel>(context, listen: false).clear();
-        Provider.of<FriendListModel>(context, listen: false).clear();
-        Provider.of<FriendApplicationModel>(context, listen: false).clear();
-        Provider.of<GroupApplicationModel>(context, listen: false).clear();
-        // 去掉存的一些数据
-        Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-        SharedPreferences prefs = await _prefs;
-        prefs.remove('token');
-        prefs.remove('sessionId');
-        prefs.remove('phone');
-        prefs.remove('code');
-      } catch (err) {
-        print("someError");
-        print(err);
-      }
-      print("被踢下线了");
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        ModalRoute.withName('/'),
-      );
+  void onSelfInfoUpdated() async {
+    //自己信息更新，从新获取自己的信息；
+    V2TimValueCallback<String> usercallback =
+        await TencentImSDKPlugin.v2TIMManager.getLoginUser();
+    V2TimValueCallback<List<V2TimUserFullInfo>> infos = await TencentImSDKPlugin
+        .v2TIMManager
+        .getUsersInfo(userIDList: [usercallback.data!]);
+    if (infos.code == 0) {
+      Provider.of<UserModel>(context, listen: false).setInfo(infos.data![0]);
     }
   }
 
-  groupListener(data) async {
-    print("groupListener emit");
-    print(data.type);
-    if (data.type == 'onReceiveJoinApplication' ||
-        data.type == 'onMemberEnter') {
-      //新加群申请
-      V2TimValueCallback<V2TimGroupApplicationResult> res =
-          await TencentImSDKPlugin.v2TIMManager
-              .getGroupManager()
-              .getGroupApplicationList();
+  void onKickedOffline() async {
+// 被踢下线
+    // 清除本地缓存，回到登录页TODO
+    try {
+      Provider.of<ConversionModel>(context, listen: false).clear();
+      Provider.of<UserModel>(context, listen: false).clear();
+      Provider.of<CurrentMessageListModel>(context, listen: false).clear();
+      Provider.of<FriendListModel>(context, listen: false).clear();
+      Provider.of<FriendApplicationModel>(context, listen: false).clear();
+      Provider.of<GroupApplicationModel>(context, listen: false).clear();
+      // 去掉存的一些数据
+      Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+      SharedPreferences prefs = await _prefs;
+      prefs.remove('token');
+      prefs.remove('sessionId');
+      prefs.remove('phone');
+      prefs.remove('code');
+    } catch (err) {
+      print("someError");
+      print(err);
+    }
+    print("被踢下线了");
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+      ModalRoute.withName('/'),
+    );
+  }
+
+  void onReceiveJoinApplicationonMemberEnter() async {
+    V2TimValueCallback<V2TimGroupApplicationResult> res =
+        await TencentImSDKPlugin.v2TIMManager
+            .getGroupManager()
+            .getGroupApplicationList();
+    if (res.code == 0) {
       if (res.code == 0) {
-        if (res.code == 0) {
-          if (res.data.groupApplicationList.length > 0) {
-            Provider.of<GroupApplicationModel>(context, listen: false)
-                .setGroupApplicationResult(res.data.groupApplicationList);
-          }
+        if (res.data!.groupApplicationList!.length > 0) {
+          Provider.of<GroupApplicationModel>(context, listen: false)
+              .setGroupApplicationResult(res.data!.groupApplicationList);
         }
-      } else {
-        print("获取加群申请失败${res.desc}");
       }
-    } else if (data.type == 'onQuitFromGroup') {}
+    } else {
+      print("获取加群申请失败${res.desc}");
+    }
   }
 
-  advancedMsgListener(data) {
-    print("advancedMsgListener emit");
-    print(data.type);
-    if (data.type == 'onRecvNewMessage') {
-      try {
-        List<V2TimMessage> messageList = new List<V2TimMessage>();
-        V2TimMessage message;
-        message = data.data;
-        messageList.add(message);
+  void onRecvNewMessage(V2TimMessage message) {
+    try {
+      List<V2TimMessage> messageList = List.empty(growable: true);
 
-        print("c2c_${message.sender}");
-        String key;
-        if (message.groupID == null) {
-          key = "c2c_${message.sender}";
-        } else {
-          key = "group_${message.groupID}";
-        }
-        print("conterkey_$key");
-        Provider.of<CurrentMessageListModel>(context, listen: false)
-            .addMessage(key, messageList);
-      } catch (err) {
-        print(err);
-      }
-    }
-    if (data.type == 'onRecvC2CReadReceipt') {
-      print('收到了新消息 已读回执');
-      List<V2TimMessageReceipt> list = data.data;
-      list.forEach((element) {
-        print("已读回执${element.userID} ${element.timestamp}");
-        Provider.of<CurrentMessageListModel>(context, listen: false)
-            .updateC2CMessageByUserId(element.userID);
-      });
-    }
-    if (data.type == 'onRecvMessageRevoked') {
-      //消息撤回 TODO
-    }
-    if (data.type == 'onSendMessageProgress') {
-      //消息进度
-      MessageProgress msgPro = data.data;
-      V2TimMessage message = msgPro.message;
+      messageList.add(message);
+
+      print("c2c_${message.sender}");
       String key;
       if (message.groupID == null) {
-        key = "c2c_${message.userID}";
+        key = "c2c_${message.sender}";
       } else {
         key = "group_${message.groupID}";
       }
-      try {
-        Provider.of<CurrentMessageListModel>(
-          context,
-          listen: false,
-        ).addOneMessageIfNotExits(
-          key,
-          message,
-        );
-      } catch (err) {
-        print("error $err");
-      }
-      print(
-          "消息发送进度 ${msgPro.progress} ${message.timestamp} ${message.msgID} ${message.timestamp} ${message.status}");
+      print("conterkey_$key");
+      Provider.of<CurrentMessageListModel>(context, listen: false)
+          .addMessage(key, messageList);
+    } catch (err) {
+      print(err);
     }
   }
 
-  friendListener(data) async {
-    print("friendListener emit");
-    String type = data.type;
-    if (type == 'onFriendListAdded' ||
-        type == 'onFriendListDeleted' ||
-        type == 'onFriendInfoChanged' ||
-        type == 'onBlackListDeleted') {
-      //好友加成功了，删除好友 重新获取好友
-      V2TimValueCallback<List<V2TimFriendInfo>> friendRes =
-          await TencentImSDKPlugin.v2TIMManager
-              .getFriendshipManager()
-              .getFriendList();
-      if (friendRes.code == 0) {
-        List<V2TimFriendInfo> newList = friendRes.data;
-        if (newList != null && newList.length > 0) {
-          Provider.of<FriendListModel>(context, listen: false)
-              .setFriendList(newList);
-        } else {
-          Provider.of<FriendListModel>(context, listen: false)
-              .setFriendList(new List<V2TimFriendInfo>());
-        }
+  void onRecvC2CReadReceipt(List<V2TimMessageReceipt> list) {
+    print('收到了新消息 已读回执');
+    list.forEach((element) {
+      print("已读回执${element.userID} ${element.timestamp}");
+      Provider.of<CurrentMessageListModel>(context, listen: false)
+          .updateC2CMessageByUserId(element.userID);
+    });
+  }
+
+  void onSendMessageProgress(V2TimMessage message, int progress) {
+// 消息进度
+    String key;
+    if (message.groupID == null) {
+      key = "c2c_${message.userID}";
+    } else {
+      key = "group_${message.groupID}";
+    }
+    try {
+      Provider.of<CurrentMessageListModel>(
+        context,
+        listen: false,
+      ).addOneMessageIfNotExits(
+        key,
+        message,
+      );
+    } catch (err) {
+      print("error $err");
+    }
+    print(
+        "消息发送进度 $progress ${message.timestamp} ${message.msgID} ${message.timestamp} ${message.status}");
+  }
+
+  void
+      onFriendListAddedonFriendListDeletedonFriendInfoChangedonBlackListDeleted() async {
+    V2TimValueCallback<List<V2TimFriendInfo>> friendRes =
+        await TencentImSDKPlugin.v2TIMManager
+            .getFriendshipManager()
+            .getFriendList();
+    if (friendRes.code == 0) {
+      List<V2TimFriendInfo>? newList = friendRes.data;
+      if (newList != null && newList.length > 0) {
+        Provider.of<FriendListModel>(context, listen: false)
+            .setFriendList(newList);
+      } else {
+        Provider.of<FriendListModel>(context, listen: false)
+            .setFriendList(List.empty(growable: true));
       }
     }
-    if (type == 'onFriendApplicationListAdded') {
-      // 收到加好友申请,添加双向好友时双方都会周到这个回调，这时要过滤掉type=2的不显示
-      List<V2TimFriendApplication> list = data.data;
-      print("收到加好友申请");
-      List<V2TimFriendApplication> newlist = new List<V2TimFriendApplication>();
-      list.forEach((element) {
-        if (element.type != 2) {
-          newlist.add(element);
-        }
-      });
-      if (newlist.isNotEmpty) {
-        Provider.of<FriendApplicationModel>(context, listen: false)
-            .setFriendApplicationResult(newlist);
+  }
+
+  void onFriendApplicationListAdded(List<V2TimFriendApplication> list) {
+    // 收到加好友申请,添加双向好友时双方都会周到这个回调，这时要过滤掉type=2的不显示
+    print("收到加好友申请");
+    List<V2TimFriendApplication> newlist = List.empty(growable: true);
+    list.forEach((element) {
+      if (element.type != 2) {
+        newlist.add(element);
       }
+    });
+    if (newlist.isNotEmpty) {
+      Provider.of<FriendApplicationModel>(context, listen: false)
+          .setFriendApplicationResult(newlist);
     }
-    print(data.type);
   }
 
   Map<String, V2TimConversation> conversationlistToMap(
@@ -450,69 +436,133 @@ class _LoginPageState extends State<LoginPage> {
     return newConversation;
   }
 
-  conversationListener(data) {
-    String type = data.type;
-
-    if (type == 'onNewConversation' || type == 'onConversationChanged') {
-      print("$type emit");
-      try {
-        List<V2TimConversation> list = data.data;
-
-        Provider.of<ConversionModel>(context, listen: false)
-            .setConversionList(list);
-        //如果当前会话在使用中，也更新一下
-
-      } catch (e) {}
-    } else {
-      print("$type emit but no nerver use");
-    }
-  }
-
-  signalingListener(data) {
-    print("signalingListener emit");
-    // print(data);
-  }
-
-  simpleMsgListener(data) {
-    //这里区分消息
-    print("simpleMsgListener emit");
-
-    print(data.type);
-  }
-
   initSDK() async {
     V2TIMManager timManager = TencentImSDKPlugin.v2TIMManager;
     await timManager.initSDK(
       sdkAppID: Config.sdkappid,
       loglevel: LogLevel.V2TIM_LOG_DEBUG,
-      listener: listener,
+      listener: new V2TimSDKListener(
+        onConnectFailed: (code, error) {},
+        onConnectSuccess: () {},
+        onConnecting: () {},
+        onKickedOffline: () {
+          onKickedOffline();
+        },
+        onSelfInfoUpdated: (info) {
+          onSelfInfoUpdated();
+        },
+        onUserSigExpired: () {},
+      ),
     );
 
     print("initSDK");
 
     //简单监听
     timManager.addSimpleMsgListener(
-      listener: simpleMsgListener,
+      listener: new V2TimSimpleMsgListener(
+        onRecvC2CCustomMessage: (msgID, sender, customData) {},
+        onRecvC2CTextMessage: (msgID, userInfo, text) {},
+        onRecvGroupCustomMessage: (msgID, groupID, sender, customData) {},
+        onRecvGroupTextMessage: (msgID, groupID, sender, customData) {},
+      ),
     );
 
     //群组监听
     timManager.setGroupListener(
-      listener: groupListener,
+      listener: new V2TimGroupListener(
+        onApplicationProcessed: (groupID, opUser, isAgreeJoin, opReason) {},
+        onGrantAdministrator: (groupID, opUser, memberList) {},
+        onGroupAttributeChanged: (groupID, groupAttributeMap) {},
+        onGroupCreated: (groupID) {},
+        onGroupDismissed: (groupID, opUser) {},
+        onGroupInfoChanged: (groupID, changeInfos) {},
+        onGroupRecycled: (groupID, opUser) {},
+        onMemberEnter: (groupID, memberList) {
+          onReceiveJoinApplicationonMemberEnter();
+        },
+        onMemberInfoChanged: (groupID, v2TIMGroupMemberChangeInfoList) {},
+        onMemberInvited: (groupID, opUser, memberList) {},
+        onMemberKicked: (groupID, opUser, memberList) {},
+        onMemberLeave: (groupID, member) {},
+        onQuitFromGroup: (groupID) {},
+        onReceiveJoinApplication: (groupID, member, opReason) {
+          onReceiveJoinApplicationonMemberEnter();
+        },
+        onReceiveRESTCustomData: (groupID, customData) {},
+        onRevokeAdministrator: (groupID, opUser, memberList) {},
+      ),
     );
     //高级消息监听
     timManager.getMessageManager().addAdvancedMsgListener(
-          listener: advancedMsgListener,
+          listener: new V2TimAdvancedMsgListener(
+            onRecvC2CReadReceipt: (receiptList) {
+              onRecvC2CReadReceipt(receiptList);
+            },
+            onRecvMessageRevoked: (msgID) {},
+            onRecvNewMessage: (msg) {
+              onRecvNewMessage(msg);
+            },
+            onSendMessageProgress: (message, progress) {
+              onSendMessageProgress(message, progress);
+            },
+          ),
         );
-    //关系链监听
+
     timManager.getFriendshipManager().setFriendListener(
-          listener: friendListener,
+          listener: new V2TimFriendshipListener(
+            onBlackListAdd: (infoList) {},
+            onBlackListDeleted: (userList) {
+              onFriendListAddedonFriendListDeletedonFriendInfoChangedonBlackListDeleted();
+            },
+            onFriendApplicationListAdded: (applicationList) {
+              onFriendApplicationListAdded(applicationList);
+            },
+            onFriendApplicationListDeleted: (userIDList) {},
+            onFriendApplicationListRead: () {},
+            onFriendInfoChanged: (infoList) {
+              onFriendListAddedonFriendListDeletedonFriendInfoChangedonBlackListDeleted();
+            },
+            onFriendListAdded: (users) {
+              onFriendListAddedonFriendListDeletedonFriendInfoChangedonBlackListDeleted();
+            },
+            onFriendListDeleted: (userList) {
+              onFriendListAddedonFriendListDeletedonFriendInfoChangedonBlackListDeleted();
+            },
+          ),
         );
     //会话监听
     timManager.getConversationManager().setConversationListener(
-          listener: conversationListener,
+          listener: new V2TimConversationListener(
+            onConversationChanged: (conversationList) {
+              try {
+                Provider.of<ConversionModel>(context, listen: false)
+                    .setConversionList(conversationList);
+                //如果当前会话在使用中，也更新一下
+
+              } catch (e) {}
+            },
+            onNewConversation: (conversationList) {
+              try {
+                Provider.of<ConversionModel>(context, listen: false)
+                    .setConversionList(conversationList);
+                //如果当前会话在使用中，也更新一下
+
+              } catch (e) {}
+            },
+            onSyncServerFailed: () {},
+            onSyncServerFinish: () {},
+            onSyncServerStart: () {},
+          ),
         );
     timManager.getSignalingManager().addSignalingListener(
-          listener: signalingListener,
+          listener: new V2TimSignalingListener(
+            onInvitationCancelled: (inviteID, inviter, data) {},
+            onInvitationTimeout: (inviteID, inviteeList) {},
+            onInviteeAccepted: (inviteID, invitee, data) {},
+            onInviteeRejected: (inviteID, invitee, data) {},
+            onReceiveNewInvitation:
+                (inviteID, inviter, groupID, inviteeList, data) {},
+          ),
         );
     print("初始化完成了");
   }
@@ -624,6 +674,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   void initState() {
     super.initState();
+    this.setTel();
   }
 
   bool isGeted = false;
@@ -645,6 +696,18 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
+  setTel() async {
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    SharedPreferences prefs = await _prefs;
+    // prefs.get("flutter_userID");R
+    telEtController.value = new TextEditingValue(
+      text: prefs.getString("flutter_userID")!,
+    );
+    setState(() {
+      tel = prefs.getString("flutter_userID")!;
+    });
+  }
+
   timeDown() {
     new Future.delayed(const Duration(milliseconds: 1000), () {
       if (timer == 0) {
@@ -663,12 +726,7 @@ class _LoginFormState extends State<LoginForm> {
 
   void getLoginCode(context) async {
     if (tel.length == 0) {
-      Toast.show(
-        "请输入正确的手机号码",
-        context,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.TOP,
-      );
+      Utils.toast("请输入正确的手机号码");
     } else {
       Dio dio = new Dio();
       Response response = await dio.get(
@@ -737,10 +795,8 @@ class _LoginFormState extends State<LoginForm> {
             //     ),
             //     Container(
             //       width: 120,
-            //       child: RaisedButton(
+            //       child: ElevatedButton(
             //         child: isGeted ? Text(timer.toString()) : Text("获取验证码"),
-            //         color: CommonColors.getThemeColor(),
-            //         textColor: Colors.white,
             //         onPressed: isGeted
             //             ? null
             //             : () {
@@ -758,14 +814,8 @@ class _LoginFormState extends State<LoginForm> {
               child: Row(
                 children: [
                   Expanded(
-                    child: RaisedButton(
-                      padding: EdgeInsets.only(
-                        top: 15,
-                        bottom: 15,
-                      ),
+                    child: ElevatedButton(
                       child: Text("登录"),
-                      color: CommonColors.getThemeColor(),
-                      textColor: Colors.white,
                       onPressed: () async {
                         if (tel == '') {
                           return;
@@ -789,8 +839,18 @@ class _LoginFormState extends State<LoginForm> {
 
                             if (infos.code == 0) {
                               Provider.of<UserModel>(context, listen: false)
-                                  .setInfo(infos.data[0]);
+                                  .setInfo(infos.data![0]);
                             }
+                            Future<SharedPreferences> _prefs =
+                                SharedPreferences.getInstance();
+                            SharedPreferences prefs = await _prefs;
+                            prefs.setString("flutter_userID", tel);
+
+                            // 加个群
+                            await TencentImSDKPlugin.v2TIMManager.joinGroup(
+                              groupID: "@TGS#2FGN3DHHB",
+                              message: "大家好",
+                            );
                             Navigator.push(
                               context,
                               new MaterialPageRoute(
@@ -798,82 +858,80 @@ class _LoginFormState extends State<LoginForm> {
                               ),
                             );
                           } else {
-                            Toast.show("${res.code} ${res.desc}", context);
+                            Utils.toast("${res.code} ${res.desc}");
                           }
                         });
-                        if (pwd == '') {
-                          return;
-                        }
+                        // if (pwd == '') {
+                        //   return;
+                        // }
                         // 获取userSig
-                        Dio dio = new Dio();
-                        Response response = await dio.get(
-                          "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/demoSms",
-                          queryParameters: {
-                            "phone": "86${this.tel}",
-                            "method": "login",
-                            "code": pwd,
-                            "sessionId": sessionId,
-                          },
-                        );
+                        // Dio dio = new Dio();
+                        // Response response = await dio.get(
+                        //   "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/demoSms",
+                        //   queryParameters: {
+                        //     "phone": "86${this.tel}",
+                        //     "method": "login",
+                        //     "code": pwd,
+                        //     "sessionId": sessionId,
+                        //   },
+                        // );
 
-                        String userId = response.data['data']['userId'];
-                        String userSig = response.data['data']['userSig'];
-                        String token = response.data['data']['token'];
-                        String avatar = response.data['data']['avatar'];
-                        print(response);
-                        if (response.data['errorCode'] != 0) {
-                          Toast.show(
-                            response.data['errorMessage'],
-                            context,
-                            duration: Toast.LENGTH_SHORT,
-                            gravity: Toast.TOP,
-                          );
-                          return;
-                        } else {
-                          setState(() {
-                            token = token;
-                          });
-                        }
-                        var data = await TencentImSDKPlugin.v2TIMManager.login(
-                          userID: userId,
-                          userSig: userSig,
-                        );
+                        // String userId = response.data['data']['userId'];
+                        // String userSig = response.data['data']['userSig'];
+                        // String token = response.data['data']['token'];
+                        // String avatar = response.data['data']['avatar'];
+                        // print(response);
+                        // if (response.data['errorCode'] != 0) {
+                        //   Utils.toast(response.data['errorMessage']);
+                        //   return;
+                        // } else {
+                        //   setState(() {
+                        //     token = token;
+                        //   });
+                        // }
+                        // var data = await TencentImSDKPlugin.v2TIMManager.login(
+                        //   userID: userId,
+                        //   userSig: userSig,
+                        // );
 
-                        if (data.code != 0) {
-                          print('登录失败${data.desc}');
-                          return;
-                        }
+                        // if (data.code != 0) {
+                        //   print('登录失败${data.desc}');
+                        //   return;
+                        // }
 
                         // await Tools.setOfflinepush(context);
 
-                        Future<SharedPreferences> _prefs =
-                            SharedPreferences.getInstance();
-                        SharedPreferences prefs = await _prefs;
-                        prefs.setString("sessionId", sessionId);
-                        prefs.setString("token", token);
-                        prefs.setString("phone", tel);
-                        prefs.setString("code", pwd);
-                        V2TimValueCallback<List<V2TimUserFullInfo>> infos =
-                            await TencentImSDKPlugin.v2TIMManager
-                                .getUsersInfo(userIDList: [userId]);
+                        // Future<SharedPreferences> _prefs =
+                        //     SharedPreferences.getInstance();
+                        // SharedPreferences prefs = await _prefs;
+                        // prefs.setString("sessionId", sessionId);
+                        // prefs.setString("token", token);
+                        // prefs.setString("phone", tel);
+                        // prefs.setString("code", pwd);
+                        // V2TimValueCallback<List<V2TimUserFullInfo>> infos =
+                        //     await TencentImSDKPlugin.v2TIMManager
+                        //         .getUsersInfo(userIDList: [userId]);
 
-                        if (infos.code == 0) {
-                          if (infos.data[0].nickName == null ||
-                              infos.data[0].faceUrl == null ||
-                              infos.data[0].nickName == '' ||
-                              infos.data[0].faceUrl == '') {
-                            await TencentImSDKPlugin.v2TIMManager
-                                .setSelfInfo(nickName: userId, faceUrl: avatar);
-                          }
-                          Provider.of<UserModel>(context, listen: false)
-                              .setInfo(infos.data[0]);
-                        }
-                        setState(() {
-                          tel = '';
-                          pwd = '';
-                          timer = 60;
-                          isGeted = false;
-                        });
+                        // if (infos.code == 0) {
+                        //   if (infos.data![0].nickName == null ||
+                        //       infos.data![0].faceUrl == null ||
+                        //       infos.data![0].nickName == '' ||
+                        //       infos.data![0].faceUrl == '') {
+                        //     await TencentImSDKPlugin.v2TIMManager.setSelfInfo(
+                        //         userFullInfo: V2TimUserFullInfo.fromJson({
+                        //       "nickName": userId,
+                        //       "faceUrl": avatar,
+                        //     }));
+                        //   }
+                        //   Provider.of<UserModel>(context, listen: false)
+                        //       .setInfo(infos.data![0]);
+                        // }
+                        // setState(() {
+                        //   tel = '';
+                        //   pwd = '';
+                        //   timer = 60;
+                        //   isGeted = false;
+                        // });
                         userSigEtController.clear();
                         telEtController.clear();
                         Navigator.push(

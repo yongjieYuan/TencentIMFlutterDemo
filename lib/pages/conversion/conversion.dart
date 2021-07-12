@@ -24,11 +24,11 @@ class ConversionState extends State<Conversion> {
   String lastMessageId = '';
   String userID = '';
   String groupID = '';
-  List<V2TimMessage> msgList = [];
+  List<V2TimMessage> msgList = List.empty(growable: true);
 
-  Icon righTopIcon;
+  Icon? righTopIcon;
   bool isreverse = true;
-  List<V2TimMessage> currentMessageList = new List<V2TimMessage>();
+  List<V2TimMessage> currentMessageList = List.empty(growable: true);
   ConversionState(this.conversationID);
 
   void initState() {
@@ -53,24 +53,24 @@ class ConversionState extends State<Conversion> {
         .v2TIMManager
         .getConversationManager()
         .getConversation(conversationID: conversationID);
-    String _msgID;
-    int _type;
-    String _groupID;
-    String _userID;
+    String? _msgID;
+    int? _type;
+    String? _groupID;
+    String? _userID;
 
     if (data.code == 0) {
-      _msgID = data.data.lastMessage.msgID;
-      _type = data.data.type;
-      _groupID = data.data.groupID;
-      _userID = data.data.userID;
-      print("_type ${_type}");
-      print('_userID ${_userID}');
-      print('_groupID ${_groupID}');
+      _msgID = data.data!.lastMessage!.msgID;
+      _type = data.data!.type;
+      _groupID = data.data!.groupID;
+      _userID = data.data!.userID;
+      print("_type $_type");
+      print('_userID $_userID');
+      print('_groupID $_groupID');
       setState(() {
-        type = _type;
-        lastMessageId = _msgID;
-        groupID = _groupID;
-        userID = _userID;
+        type = _type!;
+        lastMessageId = _msgID!;
+        groupID = _groupID!;
+        userID = _userID!;
         righTopIcon = _type == 1
             ? Icon(
                 Icons.account_box,
@@ -90,17 +90,17 @@ class ConversionState extends State<Conversion> {
       TencentImSDKPlugin.v2TIMManager
           .getMessageManager()
           .getC2CHistoryMessageList(
-            userID: _userID,
+            userID: _userID!,
             count: 100,
           )
           .then((listRes) {
         if (listRes.code == 0) {
-          List<V2TimMessage> list = listRes.data;
-          if (list == null || list.length == 0) {
+          List<V2TimMessage> list = listRes.data!;
+          if (list.length == 0) {
             print('没有消息啊！！！');
-            list = new List<V2TimMessage>();
+            list = List.empty(growable: true);
           }
-          print("conversationID $conversationID 消息数量 ${listRes.data.length}");
+          print("conversationID $conversationID 消息数量 ${listRes.data!.length}");
           Provider.of<CurrentMessageListModel>(context, listen: false)
               .addMessage(conversationID, list);
         } else {
@@ -112,22 +112,22 @@ class ConversionState extends State<Conversion> {
       TencentImSDKPlugin.v2TIMManager
           .getMessageManager()
           .getGroupHistoryMessageList(
-            groupID: _groupID,
+            groupID: _groupID!,
             count: 100,
           )
           .then((listRes) {
         if (listRes.code == 0) {
           print(
-              "conversationID listRes.data ${listRes.data.length} $_groupID ");
-          List<V2TimMessage> list = listRes.data;
-          if (list == null || list.length == 0) {
+              "conversationID listRes.data ${listRes.data!.length} $_groupID ");
+          List<V2TimMessage> list = listRes.data!;
+          if (list.length == 0) {
             print('conversationID 没有消息啊！！！');
-            list = new List();
+            list = List.empty(growable: true);
           } else {
             Provider.of<CurrentMessageListModel>(context, listen: false)
                 .addMessage(conversationID, list);
           }
-          print("conversationID ${conversationID} 消息数量 ${listRes.data.length}");
+          print("conversationID $conversationID 消息数量 ${listRes.data!.length}");
         } else {
           print('conversationID 获取历史消息失败');
         }
@@ -143,7 +143,10 @@ class ConversionState extends State<Conversion> {
         backgroundColor: CommonColors.getThemeColor(),
         actions: [
           IconButton(
-            icon: righTopIcon,
+            icon: Icon(
+              Icons.account_box,
+              color: CommonColors.getWitheColor(),
+            ),
             onPressed: () {
               openProfile(context);
             },

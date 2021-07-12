@@ -8,33 +8,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 
 void main() {
-  // testWidgets('Verify Platform version', (WidgetTester tester) async {
-  //   // Build our app and trigger a frame.
-  //   await tester.pumpWidget(LoginPage());
-
-  //   // Verify that platform version is retrieved.
-  //   expect(
-  //     find.byWidgetPredicate(
-  //       (Widget widget) =>
-  //           widget is Text && widget.data.startsWith('Running on:'),
-  //     ),
-  //     findsOneWidget,
-  //   );
-  // });
   SharedPreferences.setMockInitialValues({});
   WidgetsFlutterBinding.ensureInitialized();
-  void initListener(data) {}
+
   test('im init', () async {
     V2TimValueCallback<bool> res =
         await TencentImSDKPlugin.v2TIMManager.initSDK(
       sdkAppID: 1400187352,
       loglevel: LogLevel.V2TIM_LOG_ERROR,
-      listener: initListener,
+      listener: new V2TimSDKListener(),
     );
     expect(true, res.data);
   });

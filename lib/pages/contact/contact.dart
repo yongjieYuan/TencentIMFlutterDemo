@@ -172,10 +172,11 @@ class UserListItem extends StatelessWidget {
   final V2TimFriendInfo userInfo;
 
   Widget build(BuildContext context) {
-    String faceUrl = userInfo.userProfile.faceUrl;
-    String name = (userInfo.friendRemark == null || userInfo.friendRemark == '')
-        ? userInfo.userProfile.userID
-        : userInfo.friendRemark;
+    String? faceUrl = userInfo.userProfile!.faceUrl;
+    String? name =
+        (userInfo.friendRemark == null || userInfo.friendRemark == '')
+            ? userInfo.userProfile!.userID
+            : userInfo.friendRemark;
     String userId = userInfo.userID;
     return InkWell(
       onTap: () {
@@ -209,7 +210,7 @@ class UserListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      name!,
                       style: TextStyle(
                           fontSize: 18,
                           color: Color(int.parse('111111', radix: 16))
@@ -294,13 +295,13 @@ class ConcatState extends State<Contact> {
             .getFriendshipManager()
             .getFriendList();
     if (friendRes.code == 0) {
-      List<V2TimFriendInfo> list = friendRes.data;
+      List<V2TimFriendInfo>? list = friendRes.data;
       if (list != null && list.length > 0) {
         Provider.of<FriendListModel>(context, listen: false)
             .setFriendList(list);
       } else {
         Provider.of<FriendListModel>(context, listen: false)
-            .setFriendList(new List<V2TimFriendInfo>());
+            .setFriendList(new List.empty(growable: true));
       }
     }
   }
@@ -313,11 +314,11 @@ class ConcatState extends State<Contact> {
             .getGroupApplicationList();
     if (res.code == 0) {
       if (res.code == 0) {
-        if (res.data.groupApplicationList.length > 0) {
+        if (res.data!.groupApplicationList!.length > 0) {
           Provider.of<GroupApplicationModel>(context, listen: false)
-              .setGroupApplicationResult(res.data.groupApplicationList);
+              .setGroupApplicationResult(res.data!.groupApplicationList);
         } else {
-          List<V2TimGroupApplication> list = new List<V2TimGroupApplication>();
+          List<V2TimGroupApplication> list = List.empty(growable: true);
           Provider.of<GroupApplicationModel>(context, listen: false)
               .setGroupApplicationResult(list);
         }
@@ -333,11 +334,11 @@ class ConcatState extends State<Contact> {
             .getFriendshipManager()
             .getFriendApplicationList();
     if (data.code == 0) {
-      if (data.data.friendApplicationList.length > 0) {
+      if (data.data!.friendApplicationList!.length > 0) {
         Provider.of<FriendApplicationModel>(context, listen: false)
-            .setFriendApplicationResult(data.data.friendApplicationList);
+            .setFriendApplicationResult(data.data!.friendApplicationList);
       } else {
-        List<V2TimFriendApplication> list = new List<V2TimFriendApplication>();
+        List<V2TimFriendApplication> list = List.empty(growable: true);
         Provider.of<FriendApplicationModel>(context, listen: false)
             .setFriendApplicationResult(list);
       }

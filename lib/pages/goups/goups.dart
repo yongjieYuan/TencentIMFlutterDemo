@@ -44,7 +44,7 @@ class GroupItem extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                child: Text(groupInfo.groupName),
+                child: Text(groupInfo.groupName!),
               ),
             )
           ],
@@ -61,14 +61,14 @@ class GroupsState extends State<Groups> {
   GroupsState() {
     getJoinedGroupList();
   }
-  List<V2TimGroupInfo> groupList = new List<V2TimGroupInfo>();
+  List<V2TimGroupInfo> groupList = List.empty(growable: true);
   getJoinedGroupList() async {
     V2TimValueCallback<List<V2TimGroupInfo>> data = await TencentImSDKPlugin
         .v2TIMManager
         .getGroupManager()
         .getJoinedGroupList();
     if (data.code == 0) {
-      List<V2TimGroupInfo> list = data.data;
+      List<V2TimGroupInfo>? list = data.data;
       if (list != null && list.length > 0) {
         setState(() {
           groupList = list;

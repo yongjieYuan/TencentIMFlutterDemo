@@ -8,22 +8,22 @@ import 'package:tencent_im_sdk_plugin_example/common/avatar.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/common/hexToColor.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/conversion.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class ChooseContact extends StatefulWidget {
   ChooseContact(this.type, this.groupID);
   final int type; //1 个人，2群组 3,讨论组 4、聊天室
-  final String groupID;
+  final String? groupID;
   // 2、3、4均支持多选
   @override
   State<StatefulWidget> createState() => ChooseContactState(type, groupID);
 }
 
 class ShareDataWidget extends InheritedWidget {
-  ShareDataWidget({@required this.checkList, Widget child})
+  ShareDataWidget({required this.checkList, required Widget child})
       : super(child: child);
   final List<String> checkList;
-  static ShareDataWidget of(BuildContext context) {
+  static ShareDataWidget? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<ShareDataWidget>();
   }
 
@@ -37,9 +37,9 @@ class ChooseContactState extends State<ChooseContact> {
   List<V2TimFriendInfo> list = [];
 
   Map<String, String> selectMap = new Map<String, String>();
-  List<String> selectList = new List<String>();
-  int type;
-  String groupID;
+  List<String> selectList = new List.empty(growable: true);
+  late int type;
+  late String groupID;
   ChooseContactState(type, groupID) {
     this.type = type;
     this.groupID = groupID;
@@ -77,7 +77,7 @@ class ChooseContactState extends State<ChooseContact> {
         .getFriendList();
     if (data.code == 0) {
       this.setState(() {
-        list = data.data;
+        list = data.data!;
       });
     }
   }
@@ -115,12 +115,8 @@ class ChooseContactState extends State<ChooseContact> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(right: 10),
-                        child: FlatButton(
+                        child: ElevatedButton(
                           child: Text("确定"),
-                          textColor: hexToColor('ffffff'),
-                          disabledColor: CommonColors.getGapColor(),
-                          disabledTextColor: hexToColor('000000'),
-                          color: CommonColors.getThemeColor(),
                           onPressed: selectList.isEmpty
                               ? null
                               : () async {
@@ -135,8 +131,8 @@ class ChooseContactState extends State<ChooseContact> {
                                       ),
                                     );
                                   } else {
-                                    String groupYype;
-                                    String name;
+                                    String groupYype = '';
+                                    String name = '';
                                     switch (type) {
                                       case 2:
                                         groupYype = GroupType.Work;
@@ -155,7 +151,8 @@ class ChooseContactState extends State<ChooseContact> {
                                         name = "AVChatRoom";
                                         break;
                                     }
-                                    List<Map> newlist = new List<Map>();
+                                    List<Map> newlist =
+                                        new List.empty(growable: true);
                                     selectList.forEach((element) {
                                       Map user = new Map();
                                       user['userID'] = element;
@@ -173,7 +170,7 @@ class ChooseContactState extends State<ChooseContact> {
                                                 memberList: newlist,
                                               );
                                       if (res.code == 0) {
-                                        String groupId = res.data;
+                                        String? groupId = res.data;
                                         Navigator.pushReplacement(
                                           context,
                                           new MaterialPageRoute(
@@ -183,8 +180,7 @@ class ChooseContactState extends State<ChooseContact> {
                                           ),
                                         );
                                       } else {
-                                        Toast.show(
-                                            "${res.code} ${res.desc}", context);
+                                        Utils.toast("${res.code} ${res.desc}");
                                       }
                                     } else {
                                       print("selectList $selectList");
@@ -199,13 +195,13 @@ class ChooseContactState extends State<ChooseContact> {
                                           .then((response) {
                                         if (response.code == 0) {
                                           //邀请成功
-                                          Toast.show("邀请成功", context);
+                                          Utils.toast("邀请成功");
                                           Navigator.pop(context);
                                         } else {
                                           //邀请失败
-                                          Toast.show(
-                                              "${response.code} ${response.desc}",
-                                              context);
+
+                                          Utils.toast(
+                                              "${response.code} ${response.desc}");
                                         }
                                       });
                                     }
@@ -242,10 +238,10 @@ class FriendItemState extends State<FriendItem> {
   }
 
   getUserFaceUrl() {
-    return widget.info.userProfile.faceUrl == null ||
-            widget.info.userProfile.faceUrl == ''
+    return widget.info.userProfile!.faceUrl == null ||
+            widget.info.userProfile!.faceUrl == ''
         ? 'images/person.png'
-        : widget.info.userProfile.faceUrl;
+        : widget.info.userProfile!.faceUrl;
   }
 
   @override

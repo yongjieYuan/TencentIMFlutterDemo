@@ -6,14 +6,13 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_operation_result.dart
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:tencent_im_sdk_plugin_example/common/hexToColor.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/conversion.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/addToBlackList.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/friendProfilePanel.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/listGap.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/userRemak.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/friend.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class UserProfile extends StatefulWidget {
   UserProfile(this.userID);
@@ -32,9 +31,7 @@ class SendMessage extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: FlatButton(
-              height: 44,
-              color: CommonColors.getThemeColor(),
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -67,9 +64,7 @@ class DeleteFriend extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: FlatButton(
-              height: 44,
-              color: hexToColor('FA5151'),
+            child: ElevatedButton(
               onPressed: () async {
                 V2TimValueCallback<List<V2TimFriendOperationResult>> res =
                     await TencentImSDKPlugin.v2TIMManager
@@ -80,19 +75,19 @@ class DeleteFriend extends StatelessWidget {
                 );
                 if (res.code == 0) {
                   // 删除成功
-                  Toast.show('删除成功', context);
+                  Utils.toast('删除成功');
                   V2TimValueCallback<List<V2TimFriendInfo>> friendRes =
                       await TencentImSDKPlugin.v2TIMManager
                           .getFriendshipManager()
                           .getFriendList();
                   if (friendRes.code == 0) {
-                    List<V2TimFriendInfo> list = friendRes.data;
+                    List<V2TimFriendInfo>? list = friendRes.data;
                     if (list != null && list.length > 0) {
                       Provider.of<FriendListModel>(context, listen: false)
                           .setFriendList(list);
                     } else {
                       Provider.of<FriendListModel>(context, listen: false)
-                          .setFriendList(new List<V2TimFriendInfo>());
+                          .setFriendList(List.empty(growable: true));
                     }
                   }
                   Navigator.pop(context);
@@ -134,8 +129,8 @@ class HandleButtons extends StatelessWidget {
 }
 
 class UserProfileState extends State<UserProfile> {
-  String userID;
-  V2TimFriendInfoResult userInfo;
+  String? userID;
+  V2TimFriendInfoResult? userInfo;
   void initState() {
     userID = widget.userID;
     getUserInfo();
@@ -146,9 +141,9 @@ class UserProfileState extends State<UserProfile> {
     V2TimValueCallback<List<V2TimFriendInfoResult>> data =
         await TencentImSDKPlugin.v2TIMManager
             .getFriendshipManager()
-            .getFriendsInfo(userIDList: [userID]);
+            .getFriendsInfo(userIDList: [userID!]);
     if (data.code == 0) {
-      V2TimFriendInfoResult info = data.data[0];
+      V2TimFriendInfoResult info = data.data![0];
 
       setState(() {
         userInfo = info;
@@ -176,12 +171,12 @@ class UserProfileState extends State<UserProfile> {
                         children: [
                           FriendProfilePanel(userInfo, false),
                           ListGap(),
-                          AddToBlackList(userInfo),
+                          AddToBlackList(userInfo!),
                           UserRemark(userInfo, getUserInfo)
                         ],
                       ),
                     ),
-                    HandleButtons(userID),
+                    HandleButtons(userID!),
                   ],
                 ),
               ),

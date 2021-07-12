@@ -4,7 +4,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_application.dart';
 
 class FriendApplicationModel with ChangeNotifier, DiagnosticableTreeMixin {
   List<V2TimFriendApplication> _friendApplicationList =
-      new List<V2TimFriendApplication>();
+      List.empty(growable: true);
   get friendApplicationList => _friendApplicationList;
   setFriendApplicationResult(newInfo) {
     _friendApplicationList = newInfo;
@@ -13,13 +13,13 @@ class FriendApplicationModel with ChangeNotifier, DiagnosticableTreeMixin {
   }
 
   clear() {
-    _friendApplicationList = new List<V2TimFriendApplication>();
+    _friendApplicationList = List.empty(growable: true);
     notifyListeners();
     return _friendApplicationList;
   }
 
   removeApplicationByuserId(String userId) {
-    int index;
+    int? index;
     for (int i = 0; i < _friendApplicationList.length; i++) {
       if (_friendApplicationList[i].userID == userId) {
         index = i;

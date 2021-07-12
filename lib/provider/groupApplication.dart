@@ -4,7 +4,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_group_application.dart';
 
 class GroupApplicationModel with ChangeNotifier, DiagnosticableTreeMixin {
   List<V2TimGroupApplication> _groupApplicationList =
-      new List<V2TimGroupApplication>();
+      List.empty(growable: true);
   get groupApplicationList => _groupApplicationList;
   setGroupApplicationResult(newInfo) {
     _groupApplicationList = newInfo;
@@ -13,13 +13,13 @@ class GroupApplicationModel with ChangeNotifier, DiagnosticableTreeMixin {
   }
 
   clear() {
-    _groupApplicationList = new List<V2TimGroupApplication>();
+    _groupApplicationList = List.empty(growable: true);
     notifyListeners();
     return _groupApplicationList;
   }
 
   removeApplicationByuserId(String groupID) {
-    int index;
+    int? index;
     for (int i = 0; i < _groupApplicationList.length; i++) {
       if (_groupApplicationList[i].groupID == groupID) {
         index = i;

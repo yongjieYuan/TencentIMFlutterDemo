@@ -7,14 +7,14 @@ import 'package:tencent_im_sdk_plugin_example/pages/userNick/userNick.dart';
 
 class UserRemark extends StatelessWidget {
   UserRemark(this.userInfo, this.getUserInfo);
-  final V2TimFriendInfoResult userInfo;
+  final V2TimFriendInfoResult? userInfo;
   final Function getUserInfo;
   getNickName() {
-    if (userInfo.friendInfo.friendRemark == '' ||
-        userInfo.friendInfo.friendRemark == null) {
+    if (userInfo!.friendInfo!.friendRemark == '' ||
+        userInfo!.friendInfo!.friendRemark == null) {
       return '暂无备注';
     } else {
-      return userInfo.friendInfo.friendRemark;
+      return userInfo!.friendInfo!.friendRemark;
     }
   }
 
@@ -31,7 +31,7 @@ class UserRemark extends StatelessWidget {
             Navigator.push(
               context,
               new MaterialPageRoute(
-                builder: (context) => UserNick(userInfo, getUserInfo),
+                builder: (context) => UserNick(userInfo!, getUserInfo),
               ),
             );
           },

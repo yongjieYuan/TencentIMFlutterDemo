@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
-import 'package:toast/toast.dart';
 
 class SoundMessage extends StatefulWidget {
   SoundMessage(this.message);
@@ -29,7 +28,7 @@ class SoundMessageState extends State<SoundMessage> {
   }
 
   play() {
-    String url = widget.message.soundElem.url;
+    String? url = widget.message.soundElem!.url;
     if (url != null) {
       setState(() {
         isPlay = !isPlay;
@@ -39,6 +38,7 @@ class SoundMessageState extends State<SoundMessage> {
   }
 
   void deactivate() {
+    super.deactivate();
     print("sound message deactivate call ${widget.message.msgID}");
     recordPlugin.dispose();
   }
@@ -57,7 +57,7 @@ class SoundMessageState extends State<SoundMessage> {
             Expanded(
               child: Container(),
             ),
-            Text(" ${widget.message.soundElem.duration} s")
+            Text(" ${widget.message.soundElem!.duration} s")
           ],
         ),
       ),

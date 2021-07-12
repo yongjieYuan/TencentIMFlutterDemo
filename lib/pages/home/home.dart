@@ -6,7 +6,6 @@ import 'package:tencent_im_sdk_plugin_example/pages/contact/component/contactPop
 import 'package:tencent_im_sdk_plugin_example/pages/contact/contact.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/message/message.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/profile.dart';
-import 'package:tencent_im_sdk_plugin_example/pages/testapi/testapi.dart';
 
 import 'component/popupMenu.dart';
 
@@ -85,16 +84,14 @@ class HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: new BottomNavigationBar(
         items: List.generate(
-            data.length,
-            (index) => BottomNavigationBarItem(
-                  icon: index == currentIndex
-                      ? data[index].selectedIcon
-                      : data[index].unselectedIcon,
-                  title: Text(
-                    data[index].title,
-                    style: TextStyle(fontFamily: "苹方-中黑体"),
-                  ),
-                )),
+          data.length,
+          (index) => BottomNavigationBarItem(
+            icon: index == currentIndex
+                ? data[index].selectedIcon
+                : data[index].unselectedIcon,
+            label: data[index].title,
+          ),
+        ),
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
@@ -122,9 +119,9 @@ class NavigationBarData {
   final Widget widget;
 
   NavigationBarData({
-    this.unselectedIcon,
-    this.selectedIcon,
-    @required this.title,
-    @required this.widget,
+    required this.unselectedIcon,
+    required this.selectedIcon,
+    required this.title,
+    required this.widget,
   });
 }

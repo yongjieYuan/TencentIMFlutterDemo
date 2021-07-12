@@ -8,7 +8,7 @@ import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/keybooadshow.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class TextMsg extends StatefulWidget {
   final String toUser;
@@ -24,7 +24,7 @@ class TextMsgState extends State<TextMsg> {
   bool isSend = true;
   TextEditingController inputController = new TextEditingController();
   FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
-  OverlayEntry overlayEntry;
+  OverlayEntry? overlayEntry;
   String voiceIco = "images/voice_volume_1.png";
   void initState() {
     print("widget.toUser${widget.toUser}");
@@ -32,22 +32,20 @@ class TextMsgState extends State<TextMsg> {
     recordPlugin.responseFromInit.listen((data) {
       if (data) {
       } else {
-        Toast.show("初始化失败", context);
+        Utils.toast("初始化失败");
       }
     });
     recordPlugin.response.listen((data) {
-      // Toast.show(data.msg, context);
       if (data.msg == "onStop") {
         ///结束录制时会返回录制文件的地址方便上传服务器
-        // Toast.show("结束录制", context);
         if (isSend) {
           TencentImSDKPlugin.v2TIMManager
               .getMessageManager()
               .sendSoundMessage(
-                soundPath: data.path,
-                receiver: (widget.type == 1 ? widget.toUser : null),
-                groupID: (widget.type == 2 ? widget.toUser : null),
-                duration: data.audioTimeLength.toInt(),
+                soundPath: data.path!,
+                receiver: (widget.type == 1 ? widget.toUser : ""),
+                groupID: (widget.type == 2 ? widget.toUser : ""),
+                duration: data.audioTimeLength!.toInt(),
               )
               .then((sendRes) {
             // 发送成功
@@ -55,8 +53,8 @@ class TextMsgState extends State<TextMsg> {
               String key = (widget.type == 1
                   ? "c2c_${widget.toUser}"
                   : "group_${widget.toUser}");
-              List<V2TimMessage> list = new List<V2TimMessage>();
-              list.add(sendRes.data);
+              List<V2TimMessage> list = new List.empty(growable: true);
+              list.add(sendRes.data!);
               Provider.of<CurrentMessageListModel>(context, listen: false)
                   .addMessage(key, list);
               print('发送成功');
@@ -66,7 +64,7 @@ class TextMsgState extends State<TextMsg> {
       } else if (data.msg == "onStart") {}
     });
     recordPlugin.responseFromAmplitude.listen((data) {
-      var voiceData = double.parse(data.msg);
+      var voiceData = double.parse(data.msg!);
       setState(() {
         if (voiceData > 0 && voiceData < 0.1) {
           voiceIco = "images/voice_volume_2.png";
@@ -86,7 +84,7 @@ class TextMsgState extends State<TextMsg> {
           voiceIco = "images/voice_volume_1.png";
         }
         if (overlayEntry != null) {
-          overlayEntry.markNeedsBuild();
+          overlayEntry!.markNeedsBuild();
         }
       });
 
@@ -144,11 +142,11 @@ class TextMsgState extends State<TextMsg> {
           ),
         );
       });
-      Overlay.of(context).insert(overlayEntry);
+      Overlay.of(context)!.insert(overlayEntry!);
     }
   }
 
-  onSubmitted(String s, context) async {
+  onSubmitted(String? s, context) async {
     if (s == '' || s == null) {
       return;
     }
@@ -166,14 +164,14 @@ class TextMsgState extends State<TextMsg> {
       String key = (widget.type == 1
           ? "c2c_${widget.toUser}"
           : "group_${widget.toUser}");
-      List<V2TimMessage> list = new List<V2TimMessage>();
-      list.add(sendRes.data);
+      List<V2TimMessage> list = List.empty(growable: true);
+      list.add(sendRes.data!);
       Provider.of<CurrentMessageListModel>(context, listen: false)
           .addMessage(key, list);
       inputController.clear();
     } else {
       print(sendRes.desc);
-      Toast.show("发送失败 ${sendRes.code} ${sendRes.desc}", context);
+      Utils.toast("发送失败 ${sendRes.code} ${sendRes.desc}");
     }
   }
 
@@ -229,8 +227,7 @@ class TextMsgState extends State<TextMsg> {
               },
               onLongPressEnd: (e) async {
                 bool isSendLocal = true;
-                Toast.show(
-                    "${e.localPosition.dx} ${e.localPosition.dy}", context);
+                Utils.toast("${e.localPosition.dx} ${e.localPosition.dy}");
                 if (e.localPosition.dx < 0 ||
                     e.localPosition.dy < 0 ||
                     e.localPosition.dy > 40) {
@@ -240,7 +237,7 @@ class TextMsgState extends State<TextMsg> {
                 }
                 try {
                   if (overlayEntry != null) {
-                    overlayEntry.remove();
+                    overlayEntry!.remove();
                     overlayEntry = null;
                   }
                 } catch (err) {}

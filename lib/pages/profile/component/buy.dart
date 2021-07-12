@@ -8,7 +8,7 @@ class Buy extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        launch('https://buy.cloud.tencent.com/avc');
+        launch('https://cloud.tencent.com/act/618go/renew');
       },
       child: Container(
         height: 55,

@@ -13,7 +13,7 @@ class UserNick extends StatefulWidget {
 }
 
 class UserNickState extends State<UserNick> {
-  V2TimFriendInfoResult userInfo;
+  V2TimFriendInfoResult? userInfo;
   void initState() {
     this.userInfo = widget.userInfo;
     super.initState();
@@ -21,7 +21,7 @@ class UserNickState extends State<UserNick> {
 
   String nick = '';
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     if (userInfo == null) {
       return Container();
     }
@@ -45,14 +45,13 @@ class UserNickState extends State<UserNick> {
                 Row(
                   children: [
                     Expanded(
-                      child: FlatButton(
-                        color: CommonColors.getThemeColor(),
+                      child: ElevatedButton(
                         onPressed: () async {
                           V2TimCallback res = await TencentImSDKPlugin
                               .v2TIMManager
                               .getFriendshipManager()
                               .setFriendInfo(
-                                userID: userInfo.friendInfo.userID,
+                                userID: userInfo!.friendInfo!.userID,
                                 friendRemark: nick,
                               );
                           await widget.getUserInfo();
@@ -63,7 +62,6 @@ class UserNickState extends State<UserNick> {
                             print(res);
                           }
                         },
-                        textColor: CommonColors.getWitheColor(),
                         child: Text("确定"),
                       ),
                     )

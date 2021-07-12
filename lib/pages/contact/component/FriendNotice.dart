@@ -9,7 +9,7 @@ import 'package:tencent_im_sdk_plugin_example/provider/friendApplication.dart';
 
 class FrientNotice extends StatelessWidget {
   Widget build(BuildContext context) {
-    List<V2TimFriendApplication> applicationList =
+    List<V2TimFriendApplication>? applicationList =
         Provider.of<FriendApplicationModel>(context).friendApplicationList;
     print("重新渲染好友申请");
     return InkWell(

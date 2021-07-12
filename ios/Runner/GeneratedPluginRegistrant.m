@@ -16,34 +16,16 @@
 @import file_picker;
 #endif
 
-#if __has_include(<firebase_core/FLTFirebaseCorePlugin.h>)
-#import <firebase_core/FLTFirebaseCorePlugin.h>
-#else
-@import firebase_core;
-#endif
-
-#if __has_include(<firebase_messaging/FLTFirebaseMessagingPlugin.h>)
-#import <firebase_messaging/FLTFirebaseMessagingPlugin.h>
-#else
-@import firebase_messaging;
-#endif
-
-#if __has_include(<flutter_apns/FlutterApnsPlugin.h>)
-#import <flutter_apns/FlutterApnsPlugin.h>
-#else
-@import flutter_apns;
-#endif
-
 #if __has_include(<flutter_plugin_record/FlutterPluginRecordPlugin.h>)
 #import <flutter_plugin_record/FlutterPluginRecordPlugin.h>
 #else
 @import flutter_plugin_record;
 #endif
 
-#if __has_include(<flutter_video_compress/FlutterVideoCompressPlugin.h>)
-#import <flutter_video_compress/FlutterVideoCompressPlugin.h>
+#if __has_include(<fluttertoast/FluttertoastPlugin.h>)
+#import <fluttertoast/FluttertoastPlugin.h>
 #else
-@import flutter_video_compress;
+@import fluttertoast;
 #endif
 
 #if __has_include(<image_picker/FLTImagePickerPlugin.h>)
@@ -56,12 +38,6 @@
 #import <path_provider/FLTPathProviderPlugin.h>
 #else
 @import path_provider;
-#endif
-
-#if __has_include(<permission_handler/PermissionHandlerPlugin.h>)
-#import <permission_handler/PermissionHandlerPlugin.h>
-#else
-@import permission_handler;
 #endif
 
 #if __has_include(<shared_preferences/FLTSharedPreferencesPlugin.h>)
@@ -88,23 +64,26 @@
 @import video_player;
 #endif
 
+#if __has_include(<video_thumbnail/VideoThumbnailPlugin.h>)
+#import <video_thumbnail/VideoThumbnailPlugin.h>
+#else
+@import video_thumbnail;
+#endif
+
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
   [FLTDeviceInfoPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTDeviceInfoPlugin"]];
   [FilePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FilePickerPlugin"]];
-  [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
-  [FLTFirebaseMessagingPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseMessagingPlugin"]];
-  [FlutterApnsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterApnsPlugin"]];
   [FlutterPluginRecordPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterPluginRecordPlugin"]];
-  [FlutterVideoCompressPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterVideoCompressPlugin"]];
+  [FluttertoastPlugin registerWithRegistrar:[registry registrarForPlugin:@"FluttertoastPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [FLTPathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTPathProviderPlugin"]];
-  [PermissionHandlerPlugin registerWithRegistrar:[registry registrarForPlugin:@"PermissionHandlerPlugin"]];
   [FLTSharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharedPreferencesPlugin"]];
   [TencentImSDKPlugin registerWithRegistrar:[registry registrarForPlugin:@"TencentImSDKPlugin"]];
   [FLTURLLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTURLLauncherPlugin"]];
   [FLTVideoPlayerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTVideoPlayerPlugin"]];
+  [VideoThumbnailPlugin registerWithRegistrar:[registry registrarForPlugin:@"VideoThumbnailPlugin"]];
 }
 
 @end

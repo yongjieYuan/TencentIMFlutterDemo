@@ -6,7 +6,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/TextWithCommonStyle.dart';
-import 'package:toast/toast.dart';
+import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 
 class AddToBlackList extends StatefulWidget {
   AddToBlackList(this.userInfo);
@@ -55,15 +55,15 @@ class AddToBlackListState extends State<AddToBlackList> {
                           await TencentImSDKPlugin.v2TIMManager
                               .getFriendshipManager()
                               .addToBlackList(userIDList: [
-                        widget.userInfo.friendInfo.userID
+                        widget.userInfo.friendInfo!.userID
                       ]);
                       if (res.code == 0) {
-                        List<V2TimFriendOperationResult> opres = res.data;
-                        print("黑名单返回${opres[0].resultCode}");
+                        List<V2TimFriendOperationResult>? opres = res.data;
+                        print("黑名单返回${opres![0].resultCode}");
                         if (opres[0].resultCode == 0) {
-                          Toast.show("操作成功", context);
+                          Utils.toast("操作成功");
                         } else {
-                          Toast.show("操作失败", context);
+                          Utils.toast("操作失败");
                         }
                       }
                     } else {
@@ -71,15 +71,15 @@ class AddToBlackListState extends State<AddToBlackList> {
                           await TencentImSDKPlugin.v2TIMManager
                               .getFriendshipManager()
                               .deleteFromBlackList(userIDList: [
-                        widget.userInfo.friendInfo.userID
+                        widget.userInfo.friendInfo!.userID
                       ]);
                       if (res.code == 0) {
-                        List<V2TimFriendOperationResult> opres = res.data;
-                        print("黑名单返回${opres[0].resultCode}");
+                        List<V2TimFriendOperationResult>? opres = res.data;
+                        print("黑名单返回${opres![0].resultCode}");
                         if (opres[0].resultCode == 0) {
-                          Toast.show("操作成功", context);
+                          Utils.toast("操作成功");
                         } else {
-                          Toast.show("操作失败", context);
+                          Utils.toast("操作失败");
                         }
                       }
                     }

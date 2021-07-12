@@ -10,7 +10,7 @@ class MsgInput extends StatelessWidget {
   final int type;
   @override
   Widget build(BuildContext context) {
-    print("toUser${toUser} ${type} ***** MsgInput");
+    print("toUser$toUser $type ***** MsgInput");
     return Container(
       height: 55,
       child: Row(

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
-import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/component/sendMsg.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
 
@@ -20,7 +18,7 @@ class ConversationInner extends StatefulWidget {
 }
 
 class ConversationInnerState extends State<ConversationInner> {
-  List<V2TimMessage> currentMessageList = new List<V2TimMessage>();
+  List<V2TimMessage>? currentMessageList = List.empty(growable: true);
   ScrollController scrollController =
       new ScrollController(initialScrollOffset: 0.0);
   void initState() {
@@ -33,10 +31,9 @@ class ConversationInnerState extends State<ConversationInner> {
     }
     if (messageList == null) {
       return Center(
-        child: Loading(
-          indicator: BallPulseIndicator(),
-          size: 100.0,
-          color: CommonColors.getThemeColor(),
+        child: LoadingIndicator(
+          indicatorType: Indicator.lineSpinFadeLoader,
+          color: Colors.black26,
         ),
       );
     }
@@ -85,22 +82,22 @@ class ConversationInnerState extends State<ConversationInner> {
   Widget build(BuildContext context) {
     Map<String, List<V2TimMessage>> currentMessageMap =
         Provider.of<CurrentMessageListModel>(context).messageMap;
-    List<V2TimMessage> messageList = new List<V2TimMessage>();
+    List<V2TimMessage> messageList = List.empty(growable: true);
     getHistroyList(currentMessageMap, messageList);
     print("添加了一条发送中的消息 刷新聊天列表");
     return Container(
       color: Colors.white,
       child: SingleChildScrollView(
         controller: scrollController,
-        reverse: currentMessageList.length > 6, //注意设置为反向
+        reverse: currentMessageList!.length > 6, //注意设置为反向
         padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
         child: Column(
           children:
-              (currentMessageList == null || currentMessageList.length == 0)
+              (currentMessageList == null || currentMessageList!.length == 0)
                   ? [Container()]
-                  : currentMessageList.map(
+                  : currentMessageList!.map(
                       (e) {
-                        return SendMsg(e, Key(e.msgID));
+                        return SendMsg(e, Key(e.msgID!));
                       },
                     ).toList(),
         ),

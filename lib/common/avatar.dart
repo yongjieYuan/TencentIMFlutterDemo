@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-import 'package:transparent_image/transparent_image.dart';
 
+// ignore: must_be_immutable
 class Avatar extends StatelessWidget {
-  String avtarUrl = '';
-  double width = 0;
-  double height = 0;
-  double radius = 0;
+  late String avtarUrl = '';
+  late double width = 0;
+  late double height = 0;
+  late double radius = 0;
   Avatar({avtarUrl, width, height, radius}) {
     this.avtarUrl = avtarUrl;
     this.width = width.toDouble();
@@ -30,7 +30,7 @@ class Avatar extends StatelessWidget {
                 width: width,
                 height: height,
                 errorBuilder: (BuildContext context, Object exception,
-                    StackTrace stackTrace) {
+                    StackTrace? stackTrace) {
                   print("图片渲染失败");
                   return Container(
                     width: width,

@@ -1,39 +1,14 @@
-import 'dart:ui';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_check_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_group.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_operation_result.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_operation_result.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_message_progress.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_application.dart';
 
-import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_info.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_group_application_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_message_receipt.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
-
-import 'package:tencent_im_sdk_plugin/models/v2_tim_event_callback.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
-import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
-
-import 'package:tencent_im_sdk_plugin_example/pages/home/home.dart';
-import 'package:tencent_im_sdk_plugin_example/provider/conversion.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
-import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
-import 'package:tencent_im_sdk_plugin_example/provider/friend.dart';
-import 'package:tencent_im_sdk_plugin_example/provider/friendApplication.dart';
-import 'package:tencent_im_sdk_plugin_example/provider/groupApplication.dart';
-import 'package:tencent_im_sdk_plugin_example/provider/user.dart';
-import 'package:toast/toast.dart';
 
 class TestApi extends StatefulWidget {
   @override
@@ -48,64 +23,14 @@ class _TestApiState extends State<TestApi> {
     // tologin();
   }
 
-  listener(V2TimEventCallback data) async {}
-  simpleMsgListener(V2TimEventCallback data) async {}
-  groupListener(V2TimEventCallback data) async {}
-  advancedMsgListener(V2TimEventCallback data) async {}
-  friendListener(V2TimEventCallback data) async {}
-  conversationListener(V2TimEventCallback data) async {}
-  signalingListener(V2TimEventCallback data) async {}
-
-  initSDK() async {
-    await TencentImSDKPlugin.v2TIMManager.initSDK(
-      // sdkAppID: 1400425583,
-      sdkAppID: 1400187352,
-      loglevel: LogLevel.V2TIM_LOG_ERROR,
-      listener: listener,
-    );
-
-    print("initSDK");
-
-    //简单监听
-    TencentImSDKPlugin.v2TIMManager.addSimpleMsgListener(
-      listener: simpleMsgListener,
-    );
-
-    //群组监听
-    TencentImSDKPlugin.v2TIMManager.setGroupListener(
-      listener: groupListener,
-    );
-    //高级消息监听
-    TencentImSDKPlugin.v2TIMManager.getMessageManager().addAdvancedMsgListener(
-          listener: advancedMsgListener,
-        );
-    //关系链监听
-    TencentImSDKPlugin.v2TIMManager.getFriendshipManager().setFriendListener(
-          listener: friendListener,
-        );
-    //会话监听
-    TencentImSDKPlugin.v2TIMManager
-        .getConversationManager()
-        .setConversationListener(
-          listener: conversationListener,
-        );
-    TencentImSDKPlugin.v2TIMManager.getSignalingManager().addSignalingListener(
-          listener: signalingListener,
-        );
-    print("初始化完成了");
-  }
-
   tologin() async {
     const userId = "lexuslin";
-    const userSig =
-        "eJwtzE8LgjAcxvH3smthv003-0CHwIpo0CG7dSm24pfOpjMxoveeqcfn88D3QzJ59Fpdk4QwD8h82Kh02eANBy5093IFltPnVH6xFhVJaABAo9DnbHx0Z7HWvXPOGQCM2qD5mwAR0ihi4VTBe59W6Xof680OjTPPoArUtfJnPEMpVwdGY3ifFyexfeRpK92SfH8q-zJ8";
-    V2TimCallback data = await TencentImSDKPlugin.v2TIMManager.login(
+    const userSig = "";
+    await TencentImSDKPlugin.v2TIMManager.login(
       userID: userId,
       userSig: userSig,
     );
-    V2TimValueCallback<List<V2TimUserFullInfo>> infos = await TencentImSDKPlugin
-        .v2TIMManager
-        .getUsersInfo(userIDList: [userId]);
+    await TencentImSDKPlugin.v2TIMManager.getUsersInfo(userIDList: [userId]);
   }
 
   // getJoinedGroupList() async {
@@ -380,7 +305,7 @@ class _TestApiState extends State<TestApi> {
   }
 
   deleteMessages() async {
-    List<String> list = new List<String>();
+    List<String> list = List.empty(growable: true);
     list.add("144115225971632901-1607682284-904218793");
     V2TimCallback res = await TencentImSDKPlugin.v2TIMManager
         .getMessageManager()
@@ -420,159 +345,159 @@ class _TestApiState extends State<TestApi> {
           itemBuilder: (context, i) => new Column(
             children: [
               Text("Manager"),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: unInitSDK,
                 child: Text("unInitSDK"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getVersion,
                 child: Text("getVersion"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getServerTime,
                 child: Text("getServerTime"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getLoginStatus,
                 child: Text("getLoginStatus"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: removeSimpleMsgListener,
                 child: Text("removeSimpleMsgListener"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: dismissGroup,
                 child: Text("dismissGroup"),
               ),
               Text("Group"),
-              // RaisedButton(
+              // ElevatedButton(
               //   onPressed: setGroupInfo,
               //   child: Text("setGroupInfo"),
               // ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setReceiveMessageOpt,
                 child: Text("setReceiveMessageOpt"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: createGroup,
                 child: Text("createGroup"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: initGroupAttributes,
                 child: Text("initGroupAttributes"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setGroupAttributes,
                 child: Text("setGroupAttributes"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: deleteGroupAttributes,
                 child: Text("deleteGroupAttributes"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getGroupAttributes,
                 child: Text("getGroupAttributes"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getGroupOnlineMemberCount,
                 child: Text("getGroupOnlineMemberCount"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getGroupMembersInfo,
                 child: Text("getGroupMembersInfo"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setGroupMemberInfo,
                 child: Text("setGroupMemberInfo"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: muteGroupMember,
                 child: Text("muteGroupMember"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: inviteUserToGroup,
                 child: Text("inviteUserToGroup"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: kickGroupMember,
                 child: Text("kickGroupMember"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setGroupMemberRole,
                 child: Text("setGroupMemberRole"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: transferGroupOwner,
                 child: Text("transferGroupOwner"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setGroupApplicationRead,
                 child: Text("setGroupApplicationRead"),
               ),
               Text("Friend"),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: checkFriend,
                 child: Text("checkFriend"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: deleteFriendApplication,
                 child: Text("deleteFriendApplication"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setFriendApplicationRead,
                 child: Text("setFriendApplicationRead"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: createFriendGroup,
                 child: Text("createFriendGroup"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: getFriendGroups,
                 child: Text("getFriendGroups"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: deleteFriendGroup,
                 child: Text("deleteFriendGroup"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: renameFriendGroup,
                 child: Text("renameFriendGroup"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: addFriendsToFriendGroup,
                 child: Text("addFriendsToFriendGroup"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: deleteFriendsFromFriendGroup,
                 child: Text("deleteFriendsFromFriendGroup"),
               ),
               Text("Conversation"),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: setConversationDraft,
                 child: Text("setConversationDraft"),
               ),
               Text("Message"),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: removeAdvancedMsgListener,
                 child: Text("removeAdvancedMsgListener"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: revokeMessage,
                 child: Text("revokeMessage"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: deleteMessageFromLocalStorage,
                 child: Text("deleteMessageFromLocalStorage"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: deleteMessages,
                 child: Text("deleteMessages"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: insertGroupMessageToLocalStorage,
                 child: Text("insertGroupMessageToLocalStorage"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: insertC2CMessageToLocalStorage,
                 child: Text("insertC2CMessageToLocalStorage"),
               )
