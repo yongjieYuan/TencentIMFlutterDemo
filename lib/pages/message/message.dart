@@ -27,7 +27,7 @@ class MessageState extends State<Message> {
     V2TimValueCallback<V2TimConversationResult> data = await TencentImSDKPlugin
         .v2TIMManager
         .getConversationManager()
-        .getConversationList(count: 100, nextSeq: 0);
+        .getConversationList(count: 100, nextSeq: "0");
     print("当前会话长度${data.data!.conversationList!.length}");
 
     List<V2TimConversation>? newList =
