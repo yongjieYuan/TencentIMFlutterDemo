@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
@@ -13,6 +15,7 @@ import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 class TextMsg extends StatefulWidget {
   final String toUser;
   final int type;
+
   TextMsg(this.toUser, this.type);
 
   @override
@@ -154,6 +157,8 @@ class TextMsgState extends State<TextMsg> {
     if (widget.type == 1) {
       sendRes = await TencentImSDKPlugin.v2TIMManager
           .sendC2CTextMessage(text: s, userID: widget.toUser);
+      print("发送信息简介$sendRes");
+      inspect(widget);
     } else {
       sendRes = await TencentImSDKPlugin.v2TIMManager
           .sendGroupTextMessage(text: s, groupID: widget.toUser, priority: 1);

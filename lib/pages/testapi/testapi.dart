@@ -83,10 +83,10 @@ class _TestApiState extends State<TestApi> {
 
   // 0接收且推送，1不接收，2在线接收离线不推送
   setReceiveMessageOpt() async {
-    V2TimCallback res = await TencentImSDKPlugin.v2TIMManager
-        .getGroupManager()
-        .setReceiveMessageOpt(groupID: "@TGS#2DWCNB3GH", opt: 0);
-    print(res.toJson());
+    // V2TimCallback res = await TencentImSDKPlugin.v2TIMManager
+    //     .getMessageManager()
+    //     .(groupID: "@TGS#2DWCNB3GH", opt: 0);
+    // print(res.toJson());
   }
 
   createGroup() async {

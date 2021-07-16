@@ -32,7 +32,7 @@ class AllMembersState extends State<AllMembers> {
         .getGroupMemberList(
           groupID: widget.groupInfo.groupInfo!.groupID,
           filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
-          nextSeq: 0, //第一次拉填0
+          nextSeq: "0", //第一次拉填0
         )
         .then((res) {
       List<V2TimGroupMemberFullInfo?>? list = res.data!.memberInfoList;

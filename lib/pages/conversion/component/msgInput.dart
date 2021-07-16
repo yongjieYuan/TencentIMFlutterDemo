@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/component/addAdvanceMsg.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/conversion/component/addFaceMsg.dart';
@@ -11,6 +13,7 @@ class MsgInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("toUser$toUser $type ***** MsgInput");
+
     return Container(
       height: 55,
       child: Row(

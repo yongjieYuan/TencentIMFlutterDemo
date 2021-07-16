@@ -9,10 +9,10 @@ import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
 
 class ConversationInner extends StatefulWidget {
   ConversationInner(this.conversationID, this.type, this.userID, this.groupID);
-  final String conversationID;
-  final int type;
-  final String userID;
-  final String groupID;
+  String conversationID;
+  int type;
+  String? userID;
+  String? groupID;
   @override
   State<StatefulWidget> createState() => ConversationInnerState();
 }
@@ -48,7 +48,7 @@ class ConversationInnerState extends State<ConversationInner> {
       // 如果有未读，设置成已读，否者会触发
       TencentImSDKPlugin.v2TIMManager
           .getMessageManager()
-          .markGroupMessageAsRead(groupID: widget.groupID)
+          .markGroupMessageAsRead(groupID: widget.groupID!)
           .then((res) {
         if (res.code == 0) {
           print("设置群组会话已读 成功");
@@ -64,7 +64,7 @@ class ConversationInnerState extends State<ConversationInner> {
             "设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读设置个人会话已读");
         TencentImSDKPlugin.v2TIMManager
             .getMessageManager()
-            .markC2CMessageAsRead(userID: widget.userID)
+            .markC2CMessageAsRead(userID: widget.userID!)
             .then((res) {
           if (res.code == 0) {
             print("设置个人会话已读 成功");

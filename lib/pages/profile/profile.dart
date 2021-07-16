@@ -7,6 +7,8 @@ import 'package:tencent_im_sdk_plugin_example/pages/profile/component/buy.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/listGap.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/logout.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/profilePanel.dart';
+import 'package:tencent_im_sdk_plugin_example/pages/profile/component/privacy.dart';
+import 'package:tencent_im_sdk_plugin_example/pages/profile/component/exonerate.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/testApi.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/userSign.dart';
 import 'package:tencent_im_sdk_plugin_example/pages/profile/component/contact.dart';
@@ -26,7 +28,7 @@ class ProfileState extends State<Profile> {
       return Container();
     }
 
-    return Column(
+    return ListView(
       children: [
         ProfilePanel(info, true),
         ListGap(),
@@ -37,6 +39,9 @@ class ProfileState extends State<Profile> {
         if (type == 0) ListGap(),
         if (type == 0) Blog(),
         if (type == 0) Buy(),
+        if (type == 0) ListGap(),
+        Privacy(),
+        Exonerate(),
         if (type == 0) ListGap(),
         TestApiList(),
         if (type == 0) Contact(),

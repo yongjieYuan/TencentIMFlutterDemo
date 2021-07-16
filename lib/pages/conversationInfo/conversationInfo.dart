@@ -596,7 +596,7 @@ class ConversationInfoState extends State<ConversationInfo> {
             .getGroupMemberList(
               groupID: groupID,
               filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
-              nextSeq: 0, //第一次从0开始拉
+              nextSeq: "0", //第一次从0开始拉
             );
     if (list.code == 0) {
       print(

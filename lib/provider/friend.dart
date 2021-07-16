@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_info.dart';
 
 class FriendListModel with ChangeNotifier, DiagnosticableTreeMixin {
-  List<V2TimFriendInfo> _friendList = List.empty(growable: true);
+  List<V2TimFriendInfo?> _friendList = List.empty(growable: true);
   get friendList => _friendList;
-  setFriendList(newLst) {
-    _friendList = newLst;
+  List<V2TimFriendInfo?> setFriendList(List<V2TimFriendInfo?>? newLst) {
+    _friendList = (newLst != null ? List.empty() : newLst)!;
     notifyListeners();
     return _friendList;
   }

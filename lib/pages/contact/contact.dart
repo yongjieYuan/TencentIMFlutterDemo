@@ -240,7 +240,7 @@ class UserListItem extends StatelessWidget {
 
 class ConcatList extends StatelessWidget {
   Widget build(BuildContext context) {
-    List<V2TimFriendInfo> list =
+    List<V2TimFriendInfo?> list =
         Provider.of<FriendListModel>(context, listen: true).friendList;
 
     return Column(
@@ -266,7 +266,7 @@ class ConcatList extends StatelessWidget {
           child: list.length > 0
               ? SingleChildScrollView(
                   child: Column(
-                    children: list.map((e) => UserListItem(e)).toList(),
+                    children: list.map((e) => UserListItem(e!)).toList(),
                   ),
                 )
               : Center(
@@ -295,7 +295,7 @@ class ConcatState extends State<Contact> {
             .getFriendshipManager()
             .getFriendList();
     if (friendRes.code == 0) {
-      List<V2TimFriendInfo>? list = friendRes.data;
+      List<V2TimFriendInfo?>? list = friendRes.data;
       if (list != null && list.length > 0) {
         Provider.of<FriendListModel>(context, listen: false)
             .setFriendList(list);
