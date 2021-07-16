@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 // import 'package:device_info/device_info.dart';
+import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimAdvancedMsgListener.dart';
@@ -28,6 +29,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 
 import 'package:tencent_im_sdk_plugin_example/pages/home/home.dart';
+import 'package:tencent_im_sdk_plugin_example/pages/privacy/user_agreement.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/conversion.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
@@ -42,6 +44,9 @@ import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 // import 'package:tencent_tpns_oppo_push_plugin/tencent_tpns_oppo_push_plugin.dart';
 // import 'package:tencent_tpns_vivo_push_plugin/tencent_tpns_vivo_push_plugin.dart';
 // import 'package:tencent_tpns_xiaomi_push_plugin/tencent_tpns_xiaomi_push_plugin.dart';
+
+import '../../pages/privacy/privacy_agreement.dart' show PrivacyAgreementPage;
+// import '../../pages/privacy/user_agreement.dart' show Test, UserAgreementPage;
 
 var timLogo = AssetImage("images/logo.png");
 
@@ -683,6 +688,7 @@ class _LoginFormState extends State<LoginForm> {
   int timer = 60;
   String token = '';
   String sessionId = '';
+  bool checkboxSelected = false;
   TextEditingController userSigEtController = TextEditingController();
   TextEditingController telEtController = TextEditingController();
   void getHttp() async {
@@ -752,6 +758,11 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
+  unSelectedPrivacy() {
+    Utils.toast("需要同意隐私与用户协议");
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -809,6 +820,90 @@ class _LoginFormState extends State<LoginForm> {
             // ),
             Container(
               margin: EdgeInsets.only(
+                top: 20,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      unselectedWidgetColor: Colors.grey,
+                    ),
+                    child: Checkbox(
+                      value: checkboxSelected,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          print('checkbox的值是${value}');
+                          checkboxSelected = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: 310,
+                    child: Text.rich(
+                      TextSpan(
+                          style: TextStyle(
+                            fontSize: 12,
+                          ),
+                          children: [
+                            TextSpan(
+                                text: "我已阅读并同意",
+                                style: TextStyle(color: Colors.grey)),
+                            TextSpan(
+                                text: "<<隐私协议>>",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 110, 253, 1),
+                                ),
+                                // 设置点击事件
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PrivacyAgreementPage(),
+                                      ),
+                                    );
+                                  }),
+                            TextSpan(
+                                text: "和",
+                                style: TextStyle(color: Colors.grey)),
+                            TextSpan(
+                              text: "<<用户协议>>",
+                              style: TextStyle(
+                                color: Color.fromRGBO(0, 110, 253, 1),
+                              ),
+                              // 设置点击事件
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              UserAgreementPage()));
+                                },
+                            ),
+                            TextSpan(
+                              text: "，并授权腾讯云使用该IM账号（昵称、头像、电话号码）进行统一管理。",
+                              style: TextStyle(color: Colors.grey),
+                              // 设置点击事件
+                              // recognizer: TapGestureRecognizer()
+                              //   ..onTap = () {
+                              //     Navigator.pushNamed(context, "/privacy");
+                              //   },
+                            ),
+                          ]),
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.clip,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
                 top: 28,
               ),
               child: Row(
@@ -816,131 +911,138 @@ class _LoginFormState extends State<LoginForm> {
                   Expanded(
                     child: ElevatedButton(
                       child: Text("登录"),
-                      onPressed: () async {
-                        if (tel == '') {
-                          return;
-                        }
-                        GenerateTestUserSig usersig = new GenerateTestUserSig(
-                          sdkappid: Config.sdkappid,
-                          key: Config.key,
-                        );
-                        String pwdStr =
-                            usersig.genSig(identifier: tel, expire: 86400);
-                        TencentImSDKPlugin.v2TIMManager
-                            .login(
-                          userID: tel,
-                          userSig: pwdStr,
-                        )
-                            .then((res) async {
-                          if (res.code == 0) {
-                            V2TimValueCallback<List<V2TimUserFullInfo>> infos =
-                                await TencentImSDKPlugin.v2TIMManager
-                                    .getUsersInfo(userIDList: [tel]);
+                      onPressed: !checkboxSelected // 需要隐私协议勾选才可以登陆
+                          ? () => unSelectedPrivacy()
+                          : () async {
+                              if (tel == '') {
+                                return;
+                              }
+                              GenerateTestUserSig usersig =
+                                  new GenerateTestUserSig(
+                                sdkappid: Config.sdkappid,
+                                key: Config.key,
+                              );
+                              String pwdStr = usersig.genSig(
+                                  identifier: tel, expire: 86400);
+                              // 按理来说这里是存
+                              TencentImSDKPlugin.v2TIMManager
+                                  .login(
+                                userID: tel,
+                                userSig: pwdStr,
+                              )
+                                  .then((res) async {
+                                if (res.code == 0) {
+                                  V2TimValueCallback<List<V2TimUserFullInfo>>
+                                      infos = await TencentImSDKPlugin
+                                          .v2TIMManager
+                                          .getUsersInfo(userIDList: [tel]);
 
-                            if (infos.code == 0) {
-                              Provider.of<UserModel>(context, listen: false)
-                                  .setInfo(infos.data![0]);
-                            }
-                            Future<SharedPreferences> _prefs =
-                                SharedPreferences.getInstance();
-                            SharedPreferences prefs = await _prefs;
-                            prefs.setString("flutter_userID", tel);
+                                  if (infos.code == 0) {
+                                    Provider.of<UserModel>(context,
+                                            listen: false)
+                                        .setInfo(infos.data![0]);
+                                  }
+                                  Future<SharedPreferences> _prefs =
+                                      SharedPreferences.getInstance();
+                                  SharedPreferences prefs = await _prefs;
+                                  prefs.setString("flutter_userID", tel);
 
-                            // 加个群
-                            await TencentImSDKPlugin.v2TIMManager.joinGroup(
-                              groupID: "@TGS#2FGN3DHHB",
-                              message: "大家好",
-                            );
-                            Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => HomePage(),
-                              ),
-                            );
-                          } else {
-                            Utils.toast("${res.code} ${res.desc}");
-                          }
-                        });
-                        // if (pwd == '') {
-                        //   return;
-                        // }
-                        // 获取userSig
-                        // Dio dio = new Dio();
-                        // Response response = await dio.get(
-                        //   "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/demoSms",
-                        //   queryParameters: {
-                        //     "phone": "86${this.tel}",
-                        //     "method": "login",
-                        //     "code": pwd,
-                        //     "sessionId": sessionId,
-                        //   },
-                        // );
+                                  // 加个群
+                                  await TencentImSDKPlugin.v2TIMManager
+                                      .joinGroup(
+                                    groupID: "@TGS#2FGN3DHHB",
+                                    message: "大家好",
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    new MaterialPageRoute(
+                                      builder: (context) => HomePage(),
+                                    ),
+                                  );
+                                } else {
+                                  Utils.toast("${res.code} ${res.desc}");
+                                }
+                              });
+                              // if (pwd == '') {
+                              //   return;
+                              // }
+                              // 获取userSig
+                              // Dio dio = new Dio();
+                              // Response response = await dio.get(
+                              //   "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/demoSms",
+                              //   queryParameters: {
+                              //     "phone": "86${this.tel}",
+                              //     "method": "login",
+                              //     "code": pwd,
+                              //     "sessionId": sessionId,
+                              //   },
+                              // );
 
-                        // String userId = response.data['data']['userId'];
-                        // String userSig = response.data['data']['userSig'];
-                        // String token = response.data['data']['token'];
-                        // String avatar = response.data['data']['avatar'];
-                        // print(response);
-                        // if (response.data['errorCode'] != 0) {
-                        //   Utils.toast(response.data['errorMessage']);
-                        //   return;
-                        // } else {
-                        //   setState(() {
-                        //     token = token;
-                        //   });
-                        // }
-                        // var data = await TencentImSDKPlugin.v2TIMManager.login(
-                        //   userID: userId,
-                        //   userSig: userSig,
-                        // );
+                              // String userId = response.data['data']['userId'];
+                              // String userSig = response.data['data']['userSig'];
+                              // String token = response.data['data']['token'];
+                              // String avatar = response.data['data']['avatar'];
+                              // print(response);
+                              // if (response.data['errorCode'] != 0) {
+                              //   Utils.toast(response.data['errorMessage']);
+                              //   return;
+                              // } else {
+                              //   setState(() {
+                              //     token = token;
+                              //   });
+                              // }
+                              // var data = await TencentImSDKPlugin.v2TIMManager.login(
+                              //   userID: userId,
+                              //   userSig: userSig,
+                              // );
 
-                        // if (data.code != 0) {
-                        //   print('登录失败${data.desc}');
-                        //   return;
-                        // }
+                              // if (data.code != 0) {
+                              //   print('登录失败${data.desc}');
+                              //   return;
+                              // }
 
-                        // await Tools.setOfflinepush(context);
+                              // await Tools.setOfflinepush(context);
 
-                        // Future<SharedPreferences> _prefs =
-                        //     SharedPreferences.getInstance();
-                        // SharedPreferences prefs = await _prefs;
-                        // prefs.setString("sessionId", sessionId);
-                        // prefs.setString("token", token);
-                        // prefs.setString("phone", tel);
-                        // prefs.setString("code", pwd);
-                        // V2TimValueCallback<List<V2TimUserFullInfo>> infos =
-                        //     await TencentImSDKPlugin.v2TIMManager
-                        //         .getUsersInfo(userIDList: [userId]);
+                              // Future<SharedPreferences> _prefs =
+                              //     SharedPreferences.getInstance();
+                              // SharedPreferences prefs = await _prefs;
+                              // prefs.setString("sessionId", sessionId);
+                              // prefs.setString("token", token);
+                              // prefs.setString("phone", tel);
+                              // prefs.setString("code", pwd);
+                              // V2TimValueCallback<List<V2TimUserFullInfo>> infos =
+                              //     await TencentImSDKPlugin.v2TIMManager
+                              //         .getUsersInfo(userIDList: [userId]);
 
-                        // if (infos.code == 0) {
-                        //   if (infos.data![0].nickName == null ||
-                        //       infos.data![0].faceUrl == null ||
-                        //       infos.data![0].nickName == '' ||
-                        //       infos.data![0].faceUrl == '') {
-                        //     await TencentImSDKPlugin.v2TIMManager.setSelfInfo(
-                        //         userFullInfo: V2TimUserFullInfo.fromJson({
-                        //       "nickName": userId,
-                        //       "faceUrl": avatar,
-                        //     }));
-                        //   }
-                        //   Provider.of<UserModel>(context, listen: false)
-                        //       .setInfo(infos.data![0]);
-                        // }
-                        // setState(() {
-                        //   tel = '';
-                        //   pwd = '';
-                        //   timer = 60;
-                        //   isGeted = false;
-                        // });
-                        userSigEtController.clear();
-                        telEtController.clear();
-                        Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                        );
-                      },
+                              // if (infos.code == 0) {
+                              //   if (infos.data![0].nickName == null ||
+                              //       infos.data![0].faceUrl == null ||
+                              //       infos.data![0].nickName == '' ||
+                              //       infos.data![0].faceUrl == '') {
+                              //     await TencentImSDKPlugin.v2TIMManager.setSelfInfo(
+                              //         userFullInfo: V2TimUserFullInfo.fromJson({
+                              //       "nickName": userId,
+                              //       "faceUrl": avatar,
+                              //     }));
+                              //   }
+                              //   Provider.of<UserModel>(context, listen: false)
+                              //       .setInfo(infos.data![0]);
+                              // }
+                              // setState(() {
+                              //   tel = '';
+                              //   pwd = '';
+                              //   timer = 60;
+                              //   isGeted = false;
+                              // });
+                              userSigEtController.clear();
+                              telEtController.clear();
+                              Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                  builder: (context) => HomePage(),
+                                ),
+                              );
+                            },
                     ),
                   )
                 ],

@@ -22,8 +22,8 @@ class ConversionState extends State<Conversion> {
   String conversationID;
   int type = 1;
   String lastMessageId = '';
-  String userID = '';
-  String groupID = '';
+  String? userID;
+  String? groupID;
   List<V2TimMessage> msgList = List.empty(growable: true);
 
   Icon? righTopIcon;
@@ -38,12 +38,12 @@ class ConversionState extends State<Conversion> {
   }
 
   openProfile(context) {
-    String id = type == 1 ? userID : groupID;
+    String? id = type == 1 ? userID : groupID;
     Navigator.push(
       context,
       new MaterialPageRoute(
         builder: (context) =>
-            type == 1 ? UserProfile(id) : ConversationInfo(id, type),
+            type == 1 ? UserProfile(id!) : ConversationInfo(id!, type),
       ),
     );
   }
@@ -53,24 +53,23 @@ class ConversionState extends State<Conversion> {
         .v2TIMManager
         .getConversationManager()
         .getConversation(conversationID: conversationID);
-    String? _msgID;
-    int? _type;
-    String? _groupID;
-    String? _userID;
-
+    late String _msgID;
+    late int _type;
+    late String? _groupID;
+    late String? _userID;
     if (data.code == 0) {
-      _msgID = data.data!.lastMessage!.msgID;
-      _type = data.data!.type;
+      _msgID = data.data!.lastMessage!.msgID!;
+      _type = data.data!.type!;
       _groupID = data.data!.groupID;
       _userID = data.data!.userID;
       print("_type $_type");
       print('_userID $_userID');
       print('_groupID $_groupID');
       setState(() {
-        type = _type!;
-        lastMessageId = _msgID!;
-        groupID = _groupID!;
-        userID = _userID!;
+        type = _type;
+        lastMessageId = _msgID;
+        groupID = _groupID;
+        userID = _userID;
         righTopIcon = _type == 1
             ? Icon(
                 Icons.account_box,
@@ -90,7 +89,7 @@ class ConversionState extends State<Conversion> {
       TencentImSDKPlugin.v2TIMManager
           .getMessageManager()
           .getC2CHistoryMessageList(
-            userID: _userID!,
+            userID: _userID == null ? "" : _userID,
             count: 100,
           )
           .then((listRes) {
@@ -112,7 +111,7 @@ class ConversionState extends State<Conversion> {
       TencentImSDKPlugin.v2TIMManager
           .getMessageManager()
           .getGroupHistoryMessageList(
-            groupID: _groupID!,
+            groupID: _groupID == null ? "" : _groupID,
             count: 100,
           )
           .then((listRes) {
@@ -160,7 +159,7 @@ class ConversionState extends State<Conversion> {
           ),
           type == 0
               ? Container()
-              : MsgInput(type == 1 ? userID : groupID, type),
+              : MsgInput(type == 1 ? userID! : groupID!, type),
           Container(
             height: MediaQuery.of(context).padding.bottom,
           )

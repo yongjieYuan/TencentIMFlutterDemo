@@ -56,7 +56,7 @@ class MessageState extends State<Message> {
 
     return ListView(
       children: conversionList.map((e) {
-        if (e.lastMessage!.msgID == '') {
+        if (e.lastMessage == null || e.lastMessage!.msgID == '') {
           return Container();
         }
         return Container(
@@ -66,13 +66,13 @@ class MessageState extends State<Message> {
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.25,
             child: ConversionItem(
-              name: e.showName!,
-              faceUrl: e.faceUrl!,
-              lastMessage: e.lastMessage!,
-              unreadCount: e.unreadCount!,
-              type: e.type!,
+              name: e.showName,
+              faceUrl: e.faceUrl,
+              lastMessage: e.lastMessage,
+              unreadCount: e.unreadCount,
+              type: e.type,
               conversationID: e.conversationID,
-              userID: e.userID!,
+              userID: e.userID,
             ),
             secondaryActions: <Widget>[
               IconSlideAction(

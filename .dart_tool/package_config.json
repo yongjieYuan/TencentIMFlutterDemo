@@ -656,6 +656,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "webview_flutter",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-2.0.10",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "win32",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/win32-2.2.5",
       "packageUri": "lib/",
@@ -680,7 +686,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-07-13T03:45:25.421787Z",
+  "generated": "2021-07-14T07:21:05.104526Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }

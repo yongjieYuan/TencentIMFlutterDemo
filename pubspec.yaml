@@ -41,6 +41,7 @@ dependencies:
   flutter_easyloading: ^3.0.0
   loading_indicator: ^2.0.1
   fluttertoast: ^8.0.6
+  webview_flutter: ^2.0.10
 
 dev_dependencies:
   flutter_test:
