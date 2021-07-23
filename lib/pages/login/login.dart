@@ -705,12 +705,14 @@ class _LoginFormState extends State<LoginForm> {
   setTel() async {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     SharedPreferences prefs = await _prefs;
-    // prefs.get("flutter_userID");R
+    String? userId = prefs.getString("flutter_userID") != null
+        ? prefs.getString("flutter_userID")
+        : "";
     telEtController.value = new TextEditingValue(
-      text: prefs.getString("flutter_userID")!,
+      text: userId!,
     );
     setState(() {
-      tel = prefs.getString("flutter_userID")!;
+      tel = userId;
     });
   }
 
@@ -945,6 +947,7 @@ class _LoginFormState extends State<LoginForm> {
                                   Future<SharedPreferences> _prefs =
                                       SharedPreferences.getInstance();
                                   SharedPreferences prefs = await _prefs;
+
                                   prefs.setString("flutter_userID", tel);
 
                                   // 加个群

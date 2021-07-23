@@ -28,10 +28,11 @@ class MessageState extends State<Message> {
         .v2TIMManager
         .getConversationManager()
         .getConversationList(count: 100, nextSeq: "0");
-    print("当前会话长度${data.data!.conversationList!.length}");
-
-    List<V2TimConversation>? newList =
-        data.data!.conversationList!.cast<V2TimConversation>();
+    List<V2TimConversation> newList = [];
+    if (data.data != null)
+      newList = data.data!.conversationList!.cast<V2TimConversation>();
+    else
+      newList = [];
     Provider.of<ConversionModel>(
       context,
       listen: false,
