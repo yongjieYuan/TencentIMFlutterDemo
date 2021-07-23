@@ -39,7 +39,7 @@ class ChooseContactState extends State<ChooseContact> {
   Map<String, String> selectMap = new Map<String, String>();
   List<String> selectList = new List.empty(growable: true);
   late int type;
-  late String groupID;
+  late String? groupID;
   ChooseContactState(type, groupID) {
     this.type = type;
     this.groupID = groupID;
@@ -105,7 +105,7 @@ class ChooseContactState extends State<ChooseContact> {
                 ),
                 Container(
                   height: 50,
-                  color: hexToColor('000000'),
+                  color: hexToColor('FFFFFF'),
                   child: Row(
                     children: [
                       Expanded(
@@ -189,7 +189,7 @@ class ChooseContactState extends State<ChooseContact> {
                                       TencentImSDKPlugin.v2TIMManager
                                           .getGroupManager()
                                           .inviteUserToGroup(
-                                            groupID: groupID,
+                                            groupID: groupID as String,
                                             userList: selectList,
                                           )
                                           .then((response) {
