@@ -42,6 +42,7 @@ dependencies:
   loading_indicator: ^2.0.1
   fluttertoast: ^8.0.6
   webview_flutter: ^2.0.10
+  flutter_sound: ^8.2.5
 
 dev_dependencies:
   flutter_test:

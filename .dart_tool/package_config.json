@@ -230,6 +230,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_sound",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_sound_platform_interface",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound_platform_interface-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_sound_web",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound_web-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_spinkit",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_spinkit-5.0.0",
       "packageUri": "lib/",
@@ -330,6 +348,12 @@
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/loading_indicator-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.13"
+    },
+    {
+      "name": "logger",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/logger-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "logging",
@@ -452,6 +476,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "recase",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/recase-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "shared_preferences",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.6",
       "packageUri": "lib/",
@@ -532,6 +562,12 @@
     {
       "name": "string_scanner",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "synchronized",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/synchronized-3.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -686,7 +722,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-07-23T02:03:00.898299Z",
+  "generated": "2021-07-26T08:48:58.798093Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }

@@ -53,21 +53,25 @@ class ConversionState extends State<Conversion> {
         .v2TIMManager
         .getConversationManager()
         .getConversation(conversationID: conversationID);
-    late String _msgID;
+    late String? _msgID;
     late int _type;
     late String? _groupID;
     late String? _userID;
     if (data.code == 0) {
-      _msgID = data.data!.lastMessage!.msgID!;
+      print("!!!${data.data!.lastMessage == null}");
+      if (data.data!.lastMessage == null)
+        _msgID = "";
+      else
+        _msgID = data.data!.lastMessage!.msgID!;
       _type = data.data!.type!;
-      _groupID = data.data!.groupID;
-      _userID = data.data!.userID;
+      _groupID = data.data!.groupID == null ? "" : data.data!.groupID;
+      _userID = data.data!.userID == null ? "" : data.data!.userID;
       print("_type $_type");
       print('_userID $_userID');
       print('_groupID $_groupID');
       setState(() {
         type = _type;
-        lastMessageId = _msgID;
+        lastMessageId = _msgID!;
         groupID = _groupID;
         userID = _userID;
         righTopIcon = _type == 1

@@ -31,7 +31,7 @@ class Avatar extends StatelessWidget {
                 height: height,
                 errorBuilder: (BuildContext context, Object exception,
                     StackTrace? stackTrace) {
-                  print("图片渲染失败");
+                  print("图片渲染失败$avtarUrl");
                   return Container(
                     width: width,
                     height: height,

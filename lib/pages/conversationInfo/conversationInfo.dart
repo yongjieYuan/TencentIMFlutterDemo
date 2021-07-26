@@ -75,7 +75,7 @@ class GroupMemberProfileTitle extends StatelessWidget {
 
 class MemberListOverview extends StatelessWidget {
   MemberListOverview(this.memberInfo, this.groupInfo);
-  final V2TimGroupMemberInfoResult memberInfo;
+  final V2TimGroupMemberInfoResult? memberInfo;
   final V2TimGroupInfoResult groupInfo;
   getShowName(V2TimGroupMemberFullInfo info) {
     String name = '';
@@ -99,12 +99,12 @@ class MemberListOverview extends StatelessWidget {
   }
 
   List<Widget> renderMember(context) {
-    List<Widget> member = memberInfo.memberInfoList!
+    List<Widget> member = memberInfo!.memberInfoList!
         .sublist(
           0,
-          memberInfo.memberInfoList!.length > 5
+          memberInfo!.memberInfoList!.length > 5
               ? 5
-              : memberInfo.memberInfoList!.length,
+              : memberInfo!.memberInfoList!.length,
         )
         .map(
           (e) => Container(
@@ -563,11 +563,14 @@ class ExitGroup extends StatelessWidget {
 
 class ConversationInfoState extends State<ConversationInfo> {
   void initState() {
+    super.initState();
     this.id = widget.id;
     this.type = widget.type;
+    this.groupInfo = V2TimGroupInfoResult();
+    this.memberInfo = V2TimGroupMemberInfoResult();
+    this.memberInfo.memberInfoList = List.empty();
     print("当前会话id ${this.id}");
     getDetail();
-    super.initState();
   }
 
   late String id;

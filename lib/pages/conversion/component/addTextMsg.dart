@@ -11,6 +11,7 @@ import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/keybooadshow.dart';
 import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
+// import 'package:flutter_sound/flutter_sound.dart'; // 为了解决安卓问题才引入的新插件
 
 class TextMsg extends StatefulWidget {
   final String toUser;
@@ -27,6 +28,8 @@ class TextMsgState extends State<TextMsg> {
   bool isSend = true;
   TextEditingController inputController = new TextEditingController();
   FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
+  // FlutterSoundRecorder flutterSoundRecord =
+  //     new FlutterSoundRecorder(); // 为了解决安卓问题才引入的新插件
   OverlayEntry? overlayEntry;
   String voiceIco = "images/voice_volume_1.png";
   void initState() {
@@ -39,6 +42,7 @@ class TextMsgState extends State<TextMsg> {
       }
     });
     recordPlugin.response.listen((data) {
+      print("data.path:$data.path");
       if (data.msg == "onStop") {
         ///结束录制时会返回录制文件的地址方便上传服务器
         if (isSend) {
@@ -203,7 +207,7 @@ class TextMsgState extends State<TextMsg> {
                   autocorrect: false,
                   textAlign: TextAlign.left,
                   keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.send,
+                  textInputAction: TextInputAction.done,
                   cursorColor: CommonColors.getThemeColor(),
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -227,8 +231,13 @@ class TextMsgState extends State<TextMsg> {
                   isRecording = true;
                   isSend = true;
                 });
-                buildOverLayView(context);
+                buildOverLayView(context); //显示图标
+
                 await recordPlugin.start();
+
+                //file是文件名，比如 file = Platform.isIOS ? 'ios.m4a' : 'android.mp4'
+                print("应该开啊了");
+                // await flutterSoundRecord.startRecorder(toFile: "fool");
               },
               onLongPressEnd: (e) async {
                 bool isSendLocal = true;
@@ -251,6 +260,9 @@ class TextMsgState extends State<TextMsg> {
                   isSend = isSendLocal;
                 });
                 await recordPlugin.stop();
+                print("结束");
+                // String? anURL = await flutterSoundRecord.stopRecorder();
+                // print("anURL:$anURL");
               },
               child: Container(
                 height: 34,
