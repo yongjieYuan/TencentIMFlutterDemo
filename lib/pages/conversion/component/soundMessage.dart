@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
+import 'dart:io';
+import 'package:audioplayers/audioplayers.dart';
 
 class SoundMessage extends StatefulWidget {
   SoundMessage(this.message);
+
   final V2TimMessage message;
 
   @override
@@ -12,10 +15,12 @@ class SoundMessage extends StatefulWidget {
 
 class SoundMessageState extends State<SoundMessage> {
   bool isPlay = false;
+  AudioPlayer audioPlayer = AudioPlayer();
   //实例化对象
   FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
   void initState() {
     super.initState();
+    AudioPlayer.logEnabled = true;
     recordPlugin.responsePlayStateController.listen((data) {
       if (data.playState == 'complete') {
         setState(() {
@@ -24,16 +29,22 @@ class SoundMessageState extends State<SoundMessage> {
       }
     });
     //    初始化
-    recordPlugin.initRecordMp3();
+    recordPlugin.init();
   }
 
-  play() {
+  play() async {
     String? url = widget.message.soundElem!.url;
     if (url != null) {
       setState(() {
         isPlay = !isPlay;
       });
-      recordPlugin.playByPath(url, 'url');
+      print("语音地址$url");
+      int result = await audioPlayer.play(url);
+      if (result == 1) {
+        // success
+        print("成功了");
+      }
+      // recordPlugin.playByPath(url, "m4a");
     }
   }
 

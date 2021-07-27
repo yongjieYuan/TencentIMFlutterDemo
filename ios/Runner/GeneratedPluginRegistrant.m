@@ -4,6 +4,12 @@
 
 #import "GeneratedPluginRegistrant.h"
 
+#if __has_include(<audioplayers/AudioplayersPlugin.h>)
+#import <audioplayers/AudioplayersPlugin.h>
+#else
+@import audioplayers;
+#endif
+
 #if __has_include(<device_info/FLTDeviceInfoPlugin.h>)
 #import <device_info/FLTDeviceInfoPlugin.h>
 #else
@@ -46,6 +52,18 @@
 @import path_provider;
 #endif
 
+#if __has_include(<record/RecordPlugin.h>)
+#import <record/RecordPlugin.h>
+#else
+@import record;
+#endif
+
+#if __has_include(<record_mp3/RecordMp3Plugin.h>)
+#import <record_mp3/RecordMp3Plugin.h>
+#else
+@import record_mp3;
+#endif
+
 #if __has_include(<shared_preferences/FLTSharedPreferencesPlugin.h>)
 #import <shared_preferences/FLTSharedPreferencesPlugin.h>
 #else
@@ -85,6 +103,7 @@
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
+  [AudioplayersPlugin registerWithRegistrar:[registry registrarForPlugin:@"AudioplayersPlugin"]];
   [FLTDeviceInfoPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTDeviceInfoPlugin"]];
   [FilePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FilePickerPlugin"]];
   [FlutterPluginRecordPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterPluginRecordPlugin"]];
@@ -92,6 +111,8 @@
   [FluttertoastPlugin registerWithRegistrar:[registry registrarForPlugin:@"FluttertoastPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [FLTPathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTPathProviderPlugin"]];
+  [RecordPlugin registerWithRegistrar:[registry registrarForPlugin:@"RecordPlugin"]];
+  [RecordMp3Plugin registerWithRegistrar:[registry registrarForPlugin:@"RecordMp3Plugin"]];
   [FLTSharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharedPreferencesPlugin"]];
   [TencentImSDKPlugin registerWithRegistrar:[registry registrarForPlugin:@"TencentImSDKPlugin"]];
   [FLTURLLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTURLLauncherPlugin"]];

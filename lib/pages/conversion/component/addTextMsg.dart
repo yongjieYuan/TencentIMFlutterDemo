@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +12,10 @@ import 'package:tencent_im_sdk_plugin_example/common/colors.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/currentMessageList.dart';
 import 'package:tencent_im_sdk_plugin_example/provider/keybooadshow.dart';
 import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
+import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:math';
+import 'package:record_mp3/record_mp3.dart';
 // import 'package:flutter_sound/flutter_sound.dart'; // 为了解决安卓问题才引入的新插件
 
 class TextMsg extends StatefulWidget {
@@ -27,77 +32,92 @@ class TextMsgState extends State<TextMsg> {
   bool isRecording = false;
   bool isSend = true;
   TextEditingController inputController = new TextEditingController();
-  FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
+  // FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
+  final _audioRecorder = Record();
+  String soundPath = '';
   // FlutterSoundRecorder flutterSoundRecord =
   //     new FlutterSoundRecorder(); // 为了解决安卓问题才引入的新插件
   OverlayEntry? overlayEntry;
   String voiceIco = "images/voice_volume_1.png";
+
+  late DateTime startTime;
+  late DateTime endTime;
+
+  @override
+  void dispose() {
+    _audioRecorder.stop();
+    super.dispose();
+  }
+
   void initState() {
     print("widget.toUser${widget.toUser}");
+    _audioRecorder.hasPermission().then((value) {
+      print("hasPermission $value");
+    });
+    // recordPlugin.responseFromInit.listen((data) {
+    //   if (data) {
+    //   } else {
+    //     Utils.toast("初始化失败");
+    //   }
+    // });
+    // recordPlugin.response.listen((data) {
+    //   print("data.path:$data.path");
+    //   if (data.msg == "onStop") {
+    //     ///结束录制时会返回录制文件的地址方便上传服务器
+    //     if (isSend) {
+    //       TencentImSDKPlugin.v2TIMManager
+    //           .getMessageManager()
+    //           .sendSoundMessage(
+    //             soundPath: data.path!,
+    //             receiver: (widget.type == 1 ? widget.toUser : ""),
+    //             groupID: (widget.type == 2 ? widget.toUser : ""),
+    //             duration: data.audioTimeLength!.toInt(),
+    //           )
+    //           .then((sendRes) {
+    //         // 发送成功
+    //         if (sendRes.code == 0) {
+    //           String key = (widget.type == 1
+    //               ? "c2c_${widget.toUser}"
+    //               : "group_${widget.toUser}");
+    //           List<V2TimMessage> list = new List.empty(growable: true);
+    //           list.add(sendRes.data!);
+    //           Provider.of<CurrentMessageListModel>(context, listen: false)
+    //               .addMessage(key, list);
+    //           print('发送成功');
+    //         }
+    //       });
+    //     }
+    //   } else if (data.msg == "onStart") {}
+    // });
+    // recordPlugin.responseFromAmplitude.listen((data) {
+    //   var voiceData = double.parse(data.msg!);
+    //   setState(() {
+    //     if (voiceData > 0 && voiceData < 0.1) {
+    //       voiceIco = "images/voice_volume_2.png";
+    //     } else if (voiceData > 0.2 && voiceData < 0.3) {
+    //       voiceIco = "images/voice_volume_3.png";
+    //     } else if (voiceData > 0.3 && voiceData < 0.4) {
+    //       voiceIco = "images/voice_volume_4.png";
+    //     } else if (voiceData > 0.4 && voiceData < 0.5) {
+    //       voiceIco = "images/voice_volume_5.png";
+    //     } else if (voiceData > 0.5 && voiceData < 0.6) {
+    //       voiceIco = "images/voice_volume_6.png";
+    //     } else if (voiceData > 0.6 && voiceData < 0.7) {
+    //       voiceIco = "images/voice_volume_7.png";
+    //     } else if (voiceData > 0.7 && voiceData < 1) {
+    //       voiceIco = "images/voice_volume_7.png";
+    //     } else {
+    //       voiceIco = "images/voice_volume_1.png";
+    //     }
+    //     if (overlayEntry != null) {
+    //       overlayEntry!.markNeedsBuild();
+    //     }
+    //   });
 
-    recordPlugin.responseFromInit.listen((data) {
-      if (data) {
-      } else {
-        Utils.toast("初始化失败");
-      }
-    });
-    recordPlugin.response.listen((data) {
-      print("data.path:$data.path");
-      if (data.msg == "onStop") {
-        ///结束录制时会返回录制文件的地址方便上传服务器
-        if (isSend) {
-          TencentImSDKPlugin.v2TIMManager
-              .getMessageManager()
-              .sendSoundMessage(
-                soundPath: data.path!,
-                receiver: (widget.type == 1 ? widget.toUser : ""),
-                groupID: (widget.type == 2 ? widget.toUser : ""),
-                duration: data.audioTimeLength!.toInt(),
-              )
-              .then((sendRes) {
-            // 发送成功
-            if (sendRes.code == 0) {
-              String key = (widget.type == 1
-                  ? "c2c_${widget.toUser}"
-                  : "group_${widget.toUser}");
-              List<V2TimMessage> list = new List.empty(growable: true);
-              list.add(sendRes.data!);
-              Provider.of<CurrentMessageListModel>(context, listen: false)
-                  .addMessage(key, list);
-              print('发送成功');
-            }
-          });
-        }
-      } else if (data.msg == "onStart") {}
-    });
-    recordPlugin.responseFromAmplitude.listen((data) {
-      var voiceData = double.parse(data.msg!);
-      setState(() {
-        if (voiceData > 0 && voiceData < 0.1) {
-          voiceIco = "images/voice_volume_2.png";
-        } else if (voiceData > 0.2 && voiceData < 0.3) {
-          voiceIco = "images/voice_volume_3.png";
-        } else if (voiceData > 0.3 && voiceData < 0.4) {
-          voiceIco = "images/voice_volume_4.png";
-        } else if (voiceData > 0.4 && voiceData < 0.5) {
-          voiceIco = "images/voice_volume_5.png";
-        } else if (voiceData > 0.5 && voiceData < 0.6) {
-          voiceIco = "images/voice_volume_6.png";
-        } else if (voiceData > 0.6 && voiceData < 0.7) {
-          voiceIco = "images/voice_volume_7.png";
-        } else if (voiceData > 0.7 && voiceData < 1) {
-          voiceIco = "images/voice_volume_7.png";
-        } else {
-          voiceIco = "images/voice_volume_1.png";
-        }
-        if (overlayEntry != null) {
-          overlayEntry!.markNeedsBuild();
-        }
-      });
+    //   print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
+    // });
+    // recordPlugin.initRecordMp3();
 
-      print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
-    });
-    recordPlugin.initRecordMp3();
     super.initState();
   }
 
@@ -184,6 +204,68 @@ class TextMsgState extends State<TextMsg> {
     }
   }
 
+  // 发送音频
+  sendRecord(recordPath) {
+    if (isSend) {
+      TencentImSDKPlugin.v2TIMManager
+          .getMessageManager()
+          .sendSoundMessage(
+            soundPath: recordPath,
+            receiver: (widget.type == 1 ? widget.toUser : ""),
+            groupID: (widget.type == 2 ? widget.toUser : ""),
+            duration: 4,
+          )
+          .then((sendRes) {
+        // 发送成功
+        if (sendRes.code == 0) {
+          String key = (widget.type == 1
+              ? "c2c_${widget.toUser}"
+              : "group_${widget.toUser}");
+          List<V2TimMessage> list = new List.empty(growable: true);
+          list.add(sendRes.data!);
+          Provider.of<CurrentMessageListModel>(context, listen: false)
+              .addMessage(key, list);
+          print('发送成功');
+        }
+      });
+    }
+  }
+
+  start() async {
+    String tempPath = (await getTemporaryDirectory()).path;
+    int random = new Random().nextInt(1000);
+    String path = "$tempPath/sendSoundMessage_$random.mp3";
+    File soundFile = new File(path);
+    soundFile.createSync();
+
+    print("path: $path");
+    try {
+      RecordMp3.instance.start(path, (type) {
+        // record fail callback
+      });
+      // await _audioRecorder.start(path: path);
+    } catch (err) {
+      print(err);
+    }
+    setState(() {
+      isRecording = true;
+      soundPath = path;
+      startTime = DateTime.now();
+    });
+  }
+
+  stop() async {
+    // final lastPath = await _audioRecorder.stop();
+    RecordMp3.instance.stop();
+    setState(() {
+      isRecording = false;
+      endTime = DateTime.now();
+    });
+
+    //  print("让我看看finalPath,$lastPath");
+    return soundPath;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isKeyboradshow = Provider.of<KeyBoradModel>(context).show;
@@ -233,8 +315,8 @@ class TextMsgState extends State<TextMsg> {
                 });
                 buildOverLayView(context); //显示图标
 
-                await recordPlugin.start();
-
+                //await recordPlugin.start();
+                await start();
                 //file是文件名，比如 file = Platform.isIOS ? 'ios.m4a' : 'android.mp4'
                 print("应该开啊了");
                 // await flutterSoundRecord.startRecorder(toFile: "fool");
@@ -259,7 +341,9 @@ class TextMsgState extends State<TextMsg> {
                   isRecording = false;
                   isSend = isSendLocal;
                 });
-                await recordPlugin.stop();
+                // await recordPlugin.stop();
+                await stop();
+                sendRecord(soundPath);
                 print("结束");
                 // String? anURL = await flutterSoundRecord.stopRecorder();
                 // print("anURL:$anURL");
