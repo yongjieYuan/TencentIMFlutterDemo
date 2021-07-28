@@ -17,18 +17,25 @@ class SoundMessageState extends State<SoundMessage> {
   AudioPlayer audioPlayer = AudioPlayer();
   //实例化对象
   FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
+
   void initState() {
     super.initState();
     AudioPlayer.logEnabled = true;
-    recordPlugin.responsePlayStateController.listen((data) {
-      if (data.playState == 'complete') {
-        setState(() {
-          isPlay = false;
-        });
-      }
+    // recordPlugin.responsePlayStateController.listen((data) {
+    //   if (data.playState == 'complete') {
+    //     setState(() {
+    //       isPlay = false;
+    //     });
+    //   }
+    // });
+
+    //  当录音播放完成时
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        isPlay = false;
+      });
     });
-    //    初始化
-    recordPlugin.init();
+    // recordPlugin.init();
   }
 
   play() async {
@@ -42,9 +49,6 @@ class SoundMessageState extends State<SoundMessage> {
       if (result == 1) {
         // success
         print("成功了");
-        setState(() {
-          isPlay = !isPlay;
-        });
       }
       // recordPlugin.playByPath(url, "m4a");
     }

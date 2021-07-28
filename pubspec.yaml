@@ -45,7 +45,6 @@ dependencies:
   flutter_sound: ^8.2.5
   record: ^3.0.0
   audioplayers: ^0.19.1
-  record_mp3: ^3.0.0
 
 dev_dependencies:
   flutter_test:

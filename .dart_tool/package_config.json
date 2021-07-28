@@ -494,12 +494,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "record_mp3",
-      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/record_mp3-3.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "record_platform_interface",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/record_platform_interface-0.1.0",
       "packageUri": "lib/",
@@ -752,7 +746,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-07-28T06:50:20.154967Z",
+  "generated": "2021-07-28T09:37:05.737493Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }
