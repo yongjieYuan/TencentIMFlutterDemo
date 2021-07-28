@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
-import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 
 class SoundMessage extends StatefulWidget {
@@ -43,6 +42,9 @@ class SoundMessageState extends State<SoundMessage> {
       if (result == 1) {
         // success
         print("成功了");
+        setState(() {
+          isPlay = !isPlay;
+        });
       }
       // recordPlugin.playByPath(url, "m4a");
     }

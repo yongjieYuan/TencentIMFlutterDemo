@@ -15,7 +15,9 @@ import 'package:tencent_im_sdk_plugin_example/utils/toast.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
+import 'dart:async';
 import 'package:record_mp3/record_mp3.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 // import 'package:flutter_sound/flutter_sound.dart'; // 为了解决安卓问题才引入的新插件
 
 class TextMsg extends StatefulWidget {
@@ -31,10 +33,12 @@ class TextMsg extends StatefulWidget {
 class TextMsgState extends State<TextMsg> {
   bool isRecording = false;
   bool isSend = true;
+  double _count = 0;
   TextEditingController inputController = new TextEditingController();
   // FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
   final _audioRecorder = Record();
   String soundPath = '';
+  late Timer _timer;
   // FlutterSoundRecorder flutterSoundRecord =
   //     new FlutterSoundRecorder(); // 为了解决安卓问题才引入的新插件
   OverlayEntry? overlayEntry;
@@ -121,6 +125,13 @@ class TextMsgState extends State<TextMsg> {
     super.initState();
   }
 
+  myTimer() {
+    // 定义一个函数，将定时器包裹起来
+    _timer = Timer.periodic(Duration(milliseconds: 100), (t) {
+      _count = _count + 0.1;
+    });
+  }
+
   buildOverLayView(BuildContext context) {
     if (overlayEntry == null) {
       overlayEntry = new OverlayEntry(builder: (content) {
@@ -205,7 +216,9 @@ class TextMsgState extends State<TextMsg> {
   }
 
   // 发送音频
-  sendRecord(recordPath) {
+  sendRecord(recordPath) async {
+    var d = await flutterSoundHelper.duration(recordPath);
+    double _duration = d != null ? d.inMilliseconds / 1000.0 : 0.00;
     if (isSend) {
       TencentImSDKPlugin.v2TIMManager
           .getMessageManager()
@@ -213,7 +226,7 @@ class TextMsgState extends State<TextMsg> {
             soundPath: recordPath,
             receiver: (widget.type == 1 ? widget.toUser : ""),
             groupID: (widget.type == 2 ? widget.toUser : ""),
-            duration: 4,
+            duration: _duration.ceil(),
           )
           .then((sendRes) {
         // 发送成功
@@ -234,16 +247,13 @@ class TextMsgState extends State<TextMsg> {
   start() async {
     String tempPath = (await getTemporaryDirectory()).path;
     int random = new Random().nextInt(1000);
-    String path = "$tempPath/sendSoundMessage_$random.mp3";
+    String path = "$tempPath/sendSoundMessage_$random.aac";
     File soundFile = new File(path);
     soundFile.createSync();
 
     print("path: $path");
     try {
-      RecordMp3.instance.start(path, (type) {
-        // record fail callback
-      });
-      // await _audioRecorder.start(path: path);
+      await _audioRecorder.start(path: path);
     } catch (err) {
       print(err);
     }
@@ -255,8 +265,8 @@ class TextMsgState extends State<TextMsg> {
   }
 
   stop() async {
-    // final lastPath = await _audioRecorder.stop();
-    RecordMp3.instance.stop();
+    final lastPath = await _audioRecorder.stop();
+
     setState(() {
       isRecording = false;
       endTime = DateTime.now();
