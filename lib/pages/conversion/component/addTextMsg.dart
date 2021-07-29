@@ -324,8 +324,8 @@ class TextMsgState extends State<TextMsg> {
                   },
                   autocorrect: false,
                   textAlign: TextAlign.left,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.send,
                   cursorColor: CommonColors.getThemeColor(),
                   decoration: InputDecoration(
                     border: InputBorder.none,
