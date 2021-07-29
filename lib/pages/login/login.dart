@@ -843,7 +843,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                   Container(
-                    width: 310,
+                    width: 300,
                     child: Text.rich(
                       TextSpan(
                           style: TextStyle(
@@ -888,7 +888,7 @@ class _LoginFormState extends State<LoginForm> {
                                 },
                             ),
                             TextSpan(
-                              text: "，并授权腾讯云使用该IM账号（昵称、头像、电话号码）进行统一管理。",
+                              text: "，并授权腾讯云使用该IM账号（昵称、头像、电话号码）进行统一管理",
                               style: TextStyle(color: Colors.grey),
                               // 设置点击事件
                               // recognizer: TapGestureRecognizer()
