@@ -38,6 +38,11 @@ class SoundMessageState extends State<SoundMessage> {
     // recordPlugin.init();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   play() async {
     String? url = widget.message.soundElem!.url;
     if (url != null) {
@@ -48,7 +53,6 @@ class SoundMessageState extends State<SoundMessage> {
       int result = await audioPlayer.play(url);
       if (result == 1) {
         // success
-        print("成功了");
       }
       // recordPlugin.playByPath(url, "m4a");
     }

@@ -21,8 +21,11 @@ import 'package:flutter_sound/flutter_sound.dart';
 class TextMsg extends StatefulWidget {
   final String toUser;
   final int type;
+  final bool recordBackStatus;
+  final setRecordBackStatus;
 
-  TextMsg(this.toUser, this.type);
+  TextMsg(
+      this.toUser, this.type, this.recordBackStatus, this.setRecordBackStatus);
 
   @override
   State<StatefulWidget> createState() => TextMsgState();
@@ -36,7 +39,7 @@ class TextMsgState extends State<TextMsg> {
   // FlutterPluginRecord recordPlugin = new FlutterPluginRecord();
   final _audioRecorder = Record();
   String soundPath = '';
-  late Timer _timer;
+  late Timer? _timer;
   // FlutterSoundRecorder flutterSoundRecord =
   //     new FlutterSoundRecorder(); // 为了解决安卓问题才引入的新插件
   OverlayEntry? overlayEntry;
@@ -47,16 +50,20 @@ class TextMsgState extends State<TextMsg> {
 
   @override
   void dispose() {
-    _audioRecorder.stop();
-    canceLoopAnimeTimer();
     super.dispose();
+    _audioRecorder.stop();
+    // canceLoopAnimeTimer();
+    _timer = null;
   }
 
+  @override
   void initState() {
+    super.initState();
     print("widget.toUser${widget.toUser}");
     _audioRecorder.hasPermission().then((value) {
       print("hasPermission $value");
     });
+
     // recordPlugin.responseFromInit.listen((data) {
     //   if (data) {
     //   } else {
@@ -120,8 +127,6 @@ class TextMsgState extends State<TextMsg> {
     //   print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
     // });
     // recordPlugin.initRecordMp3();
-
-    super.initState();
   }
 
 // 动画循环（Demo使用的api因为兼容性问题无法监听音量因此直接使用循环动画）
@@ -137,7 +142,6 @@ class TextMsgState extends State<TextMsg> {
     ];
     // 定义一个函数，将定时器包裹起来
     _timer = Timer.periodic(Duration(milliseconds: 1200), (t) {
-      print("执行执行$_count$voiceIco");
       if (_count > 6) _count = 0;
 
       setState(() {
@@ -152,7 +156,8 @@ class TextMsgState extends State<TextMsg> {
 
   canceLoopAnimeTimer() {
     if (_timer != null) {
-      _timer.cancel();
+      _timer!.cancel();
+      _timer = null;
     }
   }
 
@@ -239,6 +244,11 @@ class TextMsgState extends State<TextMsg> {
     }
   }
 
+  // 1 可以跳转， 0 禁止
+  setGoBackForbid(status) {
+    widget.setRecordBackStatus(status);
+  }
+
   // 发送音频
   sendRecord(recordPath) async {
     var d = await flutterSoundHelper.duration(recordPath);
@@ -275,7 +285,7 @@ class TextMsgState extends State<TextMsg> {
     String path = "$tempPath/sendSoundMessage_$random.aac";
     File soundFile = new File(path);
     soundFile.createSync();
-
+    setGoBackForbid(false);
     print("path: $path");
     try {
       await _audioRecorder.start(path: path);
@@ -298,6 +308,7 @@ class TextMsgState extends State<TextMsg> {
       endTime = DateTime.now();
     });
     canceLoopAnimeTimer();
+    setGoBackForbid(true);
     //  print("让我看看finalPath,$lastPath");
     return soundPath;
   }
