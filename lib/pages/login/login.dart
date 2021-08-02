@@ -736,6 +736,14 @@ class _LoginFormState extends State<LoginForm> {
 
   // 获取验证码
   getLoginCode(context) async {
+    const int sdkappid = int.fromEnvironment('SDK_APPID', defaultValue: 0);
+    const String key = String.fromEnvironment('KEY', defaultValue: "");
+    print("让我看看${Config.sdkappid},${Config.productEnv}");
+    print(
+        "我拿到的环境变量key:$key,sdkappid:$sdkappid,test:${int.fromEnvironment('SDK_APPID', defaultValue: 0)}");
+    print(int.fromEnvironment('SDK_APPID', defaultValue: 0));
+    print("324");
+    Utils.toast("让我看看${Config.sdkappid},${Config.productEnv}");
     if (tel.length == 0) {
       Utils.toast('请输入手机号');
       return;
@@ -841,39 +849,42 @@ class _LoginFormState extends State<LoginForm> {
                 });
               },
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: userSigEtController,
-                    decoration: InputDecoration(
-                      labelText: "验证码",
-                      hintText: "请输入验证码",
-                      icon: Icon(Icons.lock),
-                    ),
-                    keyboardType: TextInputType.number,
-                    //校验密码
-                    onChanged: (v) {
-                      setState(() {
-                        pwd = v;
-                      });
-                    },
-                  ),
-                ),
-                Container(
-                  width: 120,
-                  child: ElevatedButton(
-                    child: isGeted ? Text(timer.toString()) : Text("获取验证码"),
-                    onPressed: isGeted
-                        ? null
-                        : () {
-                            //获取验证码
-                            getLoginCode(context);
+            Config.productEnv
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: userSigEtController,
+                          decoration: InputDecoration(
+                            labelText: "验证码",
+                            hintText: "请输入验证码",
+                            icon: Icon(Icons.lock),
+                          ),
+                          keyboardType: TextInputType.number,
+                          //校验密码
+                          onChanged: (v) {
+                            setState(() {
+                              pwd = v;
+                            });
                           },
-                  ),
-                )
-              ],
-            ),
+                        ),
+                      ),
+                      Container(
+                        width: 120,
+                        child: ElevatedButton(
+                          child:
+                              isGeted ? Text(timer.toString()) : Text("获取验证码"),
+                          onPressed: isGeted
+                              ? null
+                              : () {
+                                  //获取验证码
+                                  getLoginCode(context);
+                                },
+                        ),
+                      )
+                    ],
+                  )
+                : Container(),
             Container(
               margin: EdgeInsets.only(
                 top: 20,
@@ -969,148 +980,154 @@ class _LoginFormState extends State<LoginForm> {
                       onPressed: !checkboxSelected // 需要隐私协议勾选才可以登陆
                           ? () => unSelectedPrivacy()
                           : () async {
+                              print("Confhhh,$tel");
                               if (tel == '') {
                                 return;
                               }
 
-                              /*  这段代码是当你不需要手机验证码时使用当  */
-                              // GenerateTestUserSig usersig =
-                              //     new GenerateTestUserSig(
-                              //   sdkappid: Config.sdkappid,
-                              //   key: Config.key,
-                              // );
-                              // String pwdStr = usersig.genSig(
-                              //     identifier: tel, expire: 86400);
-                              // // 按理来说这里是存
-                              // TencentImSDKPlugin.v2TIMManager
-                              //     .login(
-                              //   userID: tel,
-                              //   userSig: pwdStr,
-                              // )
-                              //     .then((res) async {
-                              //   if (res.code == 0) {
-                              //     V2TimValueCallback<List<V2TimUserFullInfo>>
-                              //         infos = await TencentImSDKPlugin
-                              //             .v2TIMManager
-                              //             .getUsersInfo(userIDList: [tel]);
-
-                              //     if (infos.code == 0) {
-                              //       Provider.of<UserModel>(context,
-                              //               listen: false)
-                              //           .setInfo(infos.data![0]);
-                              //     }
-                              //     Future<SharedPreferences> _prefs =
-                              //         SharedPreferences.getInstance();
-                              //     SharedPreferences prefs = await _prefs;
-
-                              //     prefs.setString("flutter_userID", tel);
-
-                              //     // 加个群
-                              //     await TencentImSDKPlugin.v2TIMManager
-                              //         .joinGroup(
-                              //       groupID: "@TGS#2FGN3DHHB",
-                              //       message: "大家好",
-                              //     );
-                              //     Navigator.push(
-                              //       context,
-                              //       new MaterialPageRoute(
-                              //         builder: (context) => HomePage(),
-                              //       ),
-                              //     );
-                              //   } else {
-                              //     Utils.toast("${res.code} ${res.desc}");
-                              //   }
-                              // });
-
-                              // 手机登陆
-
-                              if (pwd == '') {
-                                return;
-                              }
-                              // 获取userSig
-                              Dio dio = new Dio();
-                              Response response = await dio.get(
-                                "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/demoSms",
-                                queryParameters: {
-                                  "phone": "86${this.tel}",
-                                  "method": "login",
-                                  "code": pwd,
-                                  "sessionId": sessionId,
-                                },
-                              );
                               print(
-                                  "pwd:$pwd, phone: $tel, sessionId: $sessionId, response: $response");
-                              String userId = '';
-                              String userSig = '';
-                              String token = '';
-                              String avatar = '';
-                              try {
-                                userId = response.data['data']['userId'];
-                                userSig = response.data['data']['userSig'];
-                                token = response.data['data']['token'];
-                                avatar = response.data['data']['avatar'];
-                              } catch (err) {
-                                // Utils.toast(
-                                //     '${response.data['errorMessage']}(建议重新获取验证码)');
-                              }
+                                  "Config.productEnv,$tel,${Config.productEnv}");
 
-                              print(response);
-                              print("我想看看userId:$userId");
-                              if (response.data['errorCode'] != 0) {
-                                Utils.toast(response.data['errorMessage'] +
-                                    "(建议重新获取验证码)");
-                                return;
+                              /*  这段代码是当你不需要手机验证码时使用(打包生产)  */
+                              /*productEnv这个是为了tencent内部打包时可以直接打包手机验证登陆, 只在登陆方式这里使用，*/
+                              if (!Config.productEnv) {
+                                // 不时生产环境走，自己测试即不需要手机验证即可登陆
+                                print("lllll,${Config.productEnv}");
+                                GenerateTestUserSig usersig =
+                                    new GenerateTestUserSig(
+                                  sdkappid: Config.sdkappid,
+                                  key: Config.key,
+                                );
+                                String pwdStr = usersig.genSig(
+                                    identifier: tel, expire: 86400);
+                                TencentImSDKPlugin.v2TIMManager
+                                    .login(
+                                  userID: tel,
+                                  userSig: pwdStr,
+                                )
+                                    .then((res) async {
+                                  if (res.code == 0) {
+                                    V2TimValueCallback<List<V2TimUserFullInfo>>
+                                        infos = await TencentImSDKPlugin
+                                            .v2TIMManager
+                                            .getUsersInfo(userIDList: [tel]);
+
+                                    if (infos.code == 0) {
+                                      Provider.of<UserModel>(context,
+                                              listen: false)
+                                          .setInfo(infos.data![0]);
+                                    }
+                                    Future<SharedPreferences> _prefs =
+                                        SharedPreferences.getInstance();
+                                    SharedPreferences prefs = await _prefs;
+
+                                    prefs.setString("flutter_userID", tel);
+
+                                    // 加个群
+                                    await TencentImSDKPlugin.v2TIMManager
+                                        .joinGroup(
+                                      groupID: "@TGS#2FGN3DHHB",
+                                      message: "大家好",
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      new MaterialPageRoute(
+                                        builder: (context) => HomePage(),
+                                      ),
+                                    );
+                                  } else {
+                                    Utils.toast("${res.code} ${res.desc}");
+                                  }
+                                });
                               } else {
+                                // 手机登陆
+                                // 获取userSig
+                                Dio dio = new Dio();
+                                Response response = await dio.get(
+                                  "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/demoSms",
+                                  queryParameters: {
+                                    "phone": "86${this.tel}",
+                                    "method": "login",
+                                    "code": pwd,
+                                    "sessionId": sessionId,
+                                  },
+                                );
+                                print(
+                                    "pwd:$pwd, phone: $tel, sessionId: $sessionId, response: $response");
+                                String userId = '';
+                                String userSig = '';
+                                String token = '';
+                                String avatar = '';
+                                try {
+                                  userId = response.data['data']['userId'];
+                                  userSig = response.data['data']['userSig'];
+                                  token = response.data['data']['token'];
+                                  avatar = response.data['data']['avatar'];
+                                } catch (err) {
+                                  Utils.toast(
+                                      '${response.data['errorMessage']}(建议重新获取验证码)');
+                                }
+
+                                print(response);
+                                print("我想看看userId:$userId");
+                                if (response.data['errorCode'] != 0) {
+                                  Utils.toast(response.data['errorMessage'] +
+                                      "(建议重新获取验证码)");
+                                  return;
+                                } else {
+                                  setState(() {
+                                    token = token;
+                                  });
+                                }
+                                var data =
+                                    await TencentImSDKPlugin.v2TIMManager.login(
+                                  userID: userId,
+                                  userSig: userSig,
+                                );
+
+                                if (data.code != 0) {
+                                  print('登录失败${data.desc}');
+                                  return;
+                                }
+
+                                // await Tools.setOfflinepush(context);
+
+                                Future<SharedPreferences> _prefs =
+                                    SharedPreferences.getInstance();
+                                SharedPreferences prefs = await _prefs;
+                                prefs.setString("sessionId", sessionId);
+                                prefs.setString("token", token);
+                                prefs.setString("phone", tel);
+                                prefs.setString("code", pwd);
+                                V2TimValueCallback<List<V2TimUserFullInfo>>
+                                    infos = await TencentImSDKPlugin
+                                        .v2TIMManager
+                                        .getUsersInfo(userIDList: [userId]);
+
+                                if (infos.code == 0) {
+                                  if (infos.data![0].nickName == null ||
+                                      infos.data![0].faceUrl == null ||
+                                      infos.data![0].nickName == '' ||
+                                      infos.data![0].faceUrl == '') {
+                                    await TencentImSDKPlugin.v2TIMManager
+                                        .setSelfInfo(
+                                            userFullInfo:
+                                                V2TimUserFullInfo.fromJson({
+                                      "nickName": userId,
+                                      "faceUrl": avatar,
+                                    }));
+                                  }
+                                  Provider.of<UserModel>(context, listen: false)
+                                      .setInfo(infos.data![0]);
+                                }
                                 setState(() {
-                                  token = token;
+                                  tel = '';
+                                  pwd = '';
+                                  timer = 60;
+                                  isGeted = false;
                                 });
                               }
-                              var data =
-                                  await TencentImSDKPlugin.v2TIMManager.login(
-                                userID: userId,
-                                userSig: userSig,
-                              );
 
-                              if (data.code != 0) {
-                                print('登录失败${data.desc}');
-                                return;
-                              }
-
-                              // await Tools.setOfflinepush(context);
-
-                              Future<SharedPreferences> _prefs =
-                                  SharedPreferences.getInstance();
-                              SharedPreferences prefs = await _prefs;
-                              prefs.setString("sessionId", sessionId);
-                              prefs.setString("token", token);
-                              prefs.setString("phone", tel);
-                              prefs.setString("code", pwd);
-                              V2TimValueCallback<List<V2TimUserFullInfo>>
-                                  infos = await TencentImSDKPlugin.v2TIMManager
-                                      .getUsersInfo(userIDList: [userId]);
-
-                              if (infos.code == 0) {
-                                if (infos.data![0].nickName == null ||
-                                    infos.data![0].faceUrl == null ||
-                                    infos.data![0].nickName == '' ||
-                                    infos.data![0].faceUrl == '') {
-                                  await TencentImSDKPlugin.v2TIMManager
-                                      .setSelfInfo(
-                                          userFullInfo:
-                                              V2TimUserFullInfo.fromJson({
-                                    "nickName": userId,
-                                    "faceUrl": avatar,
-                                  }));
-                                }
-                                Provider.of<UserModel>(context, listen: false)
-                                    .setInfo(infos.data![0]);
-                              }
-                              setState(() {
-                                tel = '';
-                                pwd = '';
-                                timer = 60;
-                                isGeted = false;
-                              });
                               userSigEtController.clear();
                               telEtController.clear();
                               Navigator.push(
