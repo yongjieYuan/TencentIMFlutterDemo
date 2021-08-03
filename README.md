@@ -14,7 +14,7 @@
 ```
 flutter run --dart-define=SDK_APPID=xxxx（xxxx是你自己申请的sdkappID） --dart-define=KEY=xxxx（xxxx是你自己申请的密钥）
 ```
-
+如需使用手机验证码登陆请再添加：--dart-define=ISPRODUCT_ENV=true
 
 - ### 若要使用vs的调试工具
 请在launch.json中添加环境参数

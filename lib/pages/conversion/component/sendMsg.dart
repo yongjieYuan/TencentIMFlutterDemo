@@ -10,31 +10,31 @@ class SendMsg extends StatelessWidget {
   final Key key;
   getShowMessage() {
     String msg = '';
+    print("message:$message");
     switch (message.elemType) {
       case 1:
-        msg = message.textElem!.text!;
+        msg = message.textElem?.text ?? "";
         break;
       case 2:
-        msg = message.customElem!.data!;
+        msg = message.customElem?.data ?? "";
         break;
       case 3:
-        msg = message.imageElem!.path!;
+        msg = message.imageElem?.path ?? "";
         break;
       case 4:
-        msg = message.soundElem!.path!;
-
+        msg = message.soundElem?.path ?? "";
         break;
       case 5:
-        msg = message.videoElem!.videoPath!;
+        msg = message.videoElem?.videoPath ?? "";
         break;
       case 6:
-        msg = message.fileElem!.fileName!;
+        msg = message.fileElem?.fileName ?? "";
         break;
       case 7:
-        msg = message.locationElem!.desc!;
+        msg = message.locationElem?.desc ?? "";
         break;
       case 8:
-        msg = message.faceElem!.data!;
+        msg = message.faceElem?.data ?? "";
         break;
       case 9:
         msg = "系统消息";

@@ -107,9 +107,63 @@ class DeleteFriend extends StatelessWidget {
   }
 }
 
-class HandleButtons extends StatelessWidget {
-  HandleButtons(this.userID);
+class AddFriend extends StatelessWidget {
+  AddFriend(this.userID);
   final String userID;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () async {
+                V2TimValueCallback<V2TimFriendOperationResult> res =
+                    await TencentImSDKPlugin.v2TIMManager
+                        .getFriendshipManager()
+                        .addFriend(
+                          userID: userID,
+                          addType: 1,
+                        );
+
+                if (res.code == 0) {
+                  Utils.toast('添加成功');
+                  V2TimValueCallback<List<V2TimFriendInfo>> friendRes =
+                      await TencentImSDKPlugin.v2TIMManager
+                          .getFriendshipManager()
+                          .getFriendList();
+                  if (friendRes.code == 0) {
+                    List<V2TimFriendInfo>? list = friendRes.data;
+                    if (list != null && list.length > 0) {
+                      Provider.of<FriendListModel>(context, listen: false)
+                          .setFriendList(list);
+                    } else {
+                      Provider.of<FriendListModel>(context, listen: false)
+                          .setFriendList(List.empty(growable: true));
+                    }
+                  }
+                  Navigator.pop(context);
+                }
+              },
+              child: Text(
+                '添加好友',
+                style: TextStyle(
+                  color: CommonColors.getWitheColor(),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class HandleButtons extends StatelessWidget {
+  HandleButtons(this.userID, this.friendStatus);
+  final String userID;
+  final bool friendStatus;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -121,7 +175,7 @@ class HandleButtons extends StatelessWidget {
       child: Column(
         children: [
           SendMessage(userID),
-          DeleteFriend(userID),
+          friendStatus ? DeleteFriend(userID) : AddFriend(userID),
         ],
       ),
     );
@@ -131,9 +185,11 @@ class HandleButtons extends StatelessWidget {
 class UserProfileState extends State<UserProfile> {
   String? userID;
   V2TimFriendInfoResult? userInfo;
+  bool friendStatus = false;
   void initState() {
     userID = widget.userID;
     getUserInfo();
+    checkFriend(userID);
     super.initState();
   }
 
@@ -149,6 +205,20 @@ class UserProfileState extends State<UserProfile> {
         userInfo = info;
       });
     }
+  }
+
+  // 检查是否为双向好友
+  checkFriend(id) async {
+    V2TimValueCallback res = await TencentImSDKPlugin.v2TIMManager
+        .getFriendshipManager()
+        .checkFriend(userIDList: [id], checkType: 2);
+    print("双向好友");
+    print(res.toJson());
+    print(res.data[0].resultType);
+    setState(() {
+      friendStatus = res.data[0].resultType == 1 ? true : false;
+    });
+    print(friendStatus);
   }
 
   @override
@@ -176,7 +246,7 @@ class UserProfileState extends State<UserProfile> {
                         ],
                       ),
                     ),
-                    HandleButtons(userID!),
+                    HandleButtons(userID!, friendStatus),
                   ],
                 ),
               ),

@@ -742,8 +742,6 @@ class _LoginFormState extends State<LoginForm> {
     print(
         "我拿到的环境变量key:$key,sdkappid:$sdkappid,test:${int.fromEnvironment('SDK_APPID', defaultValue: 0)}");
     print(int.fromEnvironment('SDK_APPID', defaultValue: 0));
-    print("324");
-    Utils.toast("让我看看${Config.sdkappid},${Config.productEnv}");
     if (tel.length == 0) {
       Utils.toast('请输入手机号');
       return;
@@ -1068,8 +1066,6 @@ class _LoginFormState extends State<LoginForm> {
                                       '${response.data['errorMessage']}(建议重新获取验证码)');
                                 }
 
-                                print(response);
-                                print("我想看看userId:$userId");
                                 if (response.data['errorCode'] != 0) {
                                   Utils.toast(response.data['errorMessage'] +
                                       "(建议重新获取验证码)");

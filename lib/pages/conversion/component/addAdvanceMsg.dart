@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -42,6 +42,14 @@ class AdvanceMsg extends StatelessWidget {
           128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
       quality: 25,
     );
+
+    // 获取视频文件大小(默认为字节)
+    var file = File(video.path);
+    int size = await file.length();
+    if (size >= 104857600) {
+      Utils.toast("发送失败,视频不能大于100MB");
+      return;
+    }
 
     V2TimValueCallback<V2TimMessage> res = await TencentImSDKPlugin.v2TIMManager
         .getMessageManager()
