@@ -212,11 +212,11 @@ class UserProfileState extends State<UserProfile> {
     V2TimValueCallback res = await TencentImSDKPlugin.v2TIMManager
         .getFriendshipManager()
         .checkFriend(userIDList: [id], checkType: 2);
-    print("双向好友");
+    print("查看好友状态");
     print(res.toJson());
     print(res.data[0].resultType);
     setState(() {
-      friendStatus = res.data[0].resultType == 1 ? true : false;
+      friendStatus = res.data[0].resultType == 0 ? false : true; // 如果是0说明不是好友
     });
     print(friendStatus);
   }
