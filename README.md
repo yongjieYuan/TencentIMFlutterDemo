@@ -13,8 +13,9 @@ flutter run --dart-define=SDK_APPID=xxxx（xxxx是你自己申请的sdkappID，�
 - #### 修改配置（可选）
 
 目录：/example/lib/utils/config
-这里配置了环境变量，您也可以在这里把SDKAPPID和KEY写死这样就不用每次运行时增加环境变量参数，但若您的仓库是对公网的，还是建议通过添加变量的方式添加appid和key以保证安全性
-
+这里配置了环境变量，您也可以在这里把SDKAPPID和KEY写死（修改例子如下）这样就不用每次运行时增加环境变量参数，但若您的仓库是对公网的，还是建议通过添加变量的方式添加appid和key以保证安全性
+  static const int sdkappid = int.fromEnvironment('SDK_APPID', defaultValue: 你的SDKAPPID(int));
+  static const String key = String.fromEnvironment('KEY',defaultValue:"xxxxx（你的KEY）");
 - ### 若要使用vs的调试工具
 请在launch.json中添加环境参数
 ```
