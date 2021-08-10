@@ -6,14 +6,14 @@
 - #### 运行demo
 
 ```
-flutter run --dart-define=SDK_APPID=xxxx（xxxx是你自己申请的sdkappID） --dart-define=KEY=xxxx（xxxx是你自己申请的密钥）
+flutter run --dart-define=SDK_APPID=xxxx（xxxx是你自己申请的sdkappID，记得删掉这个括号） --dart-define=KEY=xxxx（xxxx是你自己申请的密钥,记得删掉这个括号）
 ```
 如需使用手机验证码登陆请再添加：--dart-define=ISPRODUCT_ENV=true
 
 - #### 修改配置（可选）
 
 目录：/example/lib/utils/config
-这里配置了环境变量，建议通过运行环境时添加对应配置信息，上面运行demo就是这里配置的，要想直接写死也可
+这里配置了环境变量，您也可以在这里把SDKAPPID和KEY写死这样就不用每次运行时增加环境变量参数，但若您的仓库是对公网的，还是建议通过添加变量的方式添加appid和key以保证安全性
 
 - ### 若要使用vs的调试工具
 请在launch.json中添加环境参数
