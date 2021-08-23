@@ -10,6 +10,8 @@ flutter run --dart-define=SDK_APPID=xxxx（xxxx是你自己申请的sdkappID，�
 ```
 如需使用手机验证码登陆请再添加：--dart-define=ISPRODUCT_ENV=true
 
+PS:如您打算使用Xcode或者Android Studio直接执行项目，请直接修改环境变量，具体参考修改配置
+
 - #### 修改配置（可选）
 
 目录：/example/lib/utils/config
