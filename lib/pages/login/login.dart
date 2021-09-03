@@ -837,7 +837,7 @@ class _LoginFormState extends State<LoginForm> {
               controller: telEtController,
               decoration: InputDecoration(
                 labelText: Config.productEnv ? "手机号" : "用户名",
-                hintText: "请输入用户名",
+                hintText: Config.productEnv ? "请输入手机号" : "请输入用户名",
                 icon: Icon(Icons.phone_android),
               ),
               keyboardType: TextInputType.number,
