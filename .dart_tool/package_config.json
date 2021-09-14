@@ -26,6 +26,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "audioplayers",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.19.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "boolean_selector",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-2.1.0",
       "packageUri": "lib/",
@@ -230,6 +236,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_sound",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_sound_platform_interface",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound_platform_interface-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_sound_web",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound_web-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_spinkit",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_spinkit-5.0.0",
       "packageUri": "lib/",
@@ -330,6 +354,12 @@
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/loading_indicator-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.13"
+    },
+    {
+      "name": "logger",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/logger-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "logging",
@@ -452,6 +482,30 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "recase",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/recase-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "record",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/record-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "record_platform_interface",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/record_platform_interface-0.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "record_web",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/record_web-0.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "shared_preferences",
       "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.6",
       "packageUri": "lib/",
@@ -536,8 +590,14 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "synchronized",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/synchronized-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "tencent_im_sdk_plugin",
-      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/tencent_im_sdk_plugin-3.2.9",
+      "rootUri": "file:///Users/bryceyxwang/Documents/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/tencent_im_sdk_plugin-3.3.7",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -686,7 +746,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-07-16T12:04:49.644101Z",
+  "generated": "2021-09-14T04:25:33.014296Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }

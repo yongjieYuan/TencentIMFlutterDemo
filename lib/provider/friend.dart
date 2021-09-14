@@ -6,7 +6,7 @@ class FriendListModel with ChangeNotifier, DiagnosticableTreeMixin {
   List<V2TimFriendInfo?> _friendList = List.empty(growable: true);
   get friendList => _friendList;
   List<V2TimFriendInfo?> setFriendList(List<V2TimFriendInfo?>? newLst) {
-    _friendList = (newLst != null ? List.empty() : newLst)!;
+    _friendList = (newLst != null ? newLst : List.empty());
     notifyListeners();
     return _friendList;
   }

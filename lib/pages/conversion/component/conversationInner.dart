@@ -97,7 +97,7 @@ class ConversationInnerState extends State<ConversationInner> {
                   ? [Container()]
                   : currentMessageList!.map(
                       (e) {
-                        return SendMsg(e, Key(e.msgID!));
+                        return SendMsg(e, Key(e.msgID ?? ""));
                       },
                     ).toList(),
         ),

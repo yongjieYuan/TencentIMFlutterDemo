@@ -53,7 +53,7 @@ class ApplicationItem extends StatelessWidget {
             );
     if (res.code == 0) {
       Utils.toast("添加成功");
-      getFriendApplication(context);
+      await getFriendApplication(context); // 解决好友通知不清理的问题
       Navigator.pop(context);
     } else {
       print(res.desc);
@@ -71,8 +71,9 @@ class ApplicationItem extends StatelessWidget {
         Provider.of<FriendApplicationModel>(context, listen: false)
             .setFriendApplicationResult(data.data!.friendApplicationList);
       } else {
-        Provider.of<FriendApplicationModel>(context, listen: false)
-            .setFriendApplicationResult(List.empty(growable: true));
+        Provider.of<FriendApplicationModel>(context, listen: false).clear();
+        // Provider.of<FriendApplicationModel>(context, listen: false) 老逻辑
+        //     .setFriendApplicationResult(List.empty(growable: true));
       }
     }
   }

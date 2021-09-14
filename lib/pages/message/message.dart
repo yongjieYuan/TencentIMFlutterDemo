@@ -28,14 +28,24 @@ class MessageState extends State<Message> {
         .v2TIMManager
         .getConversationManager()
         .getConversationList(count: 100, nextSeq: "0");
-    print("当前会话长度${data.data!.conversationList!.length}");
-
-    List<V2TimConversation>? newList =
-        data.data!.conversationList!.cast<V2TimConversation>();
+    List<V2TimConversation> newList = [];
+    if (data.data != null)
+      newList = data.data!.conversationList!.cast<V2TimConversation>();
+    else
+      newList = [];
     Provider.of<ConversionModel>(
       context,
       listen: false,
     ).setConversionList(newList);
+  }
+
+  // 筛选一下图片后缀不正确的图片
+  String? checkFaceUrl(String? url) {
+    String faceUrl = url != null ? url : "";
+    RegExp checkUrl =
+        new RegExp("\S{0,}.png|.jpg|.jpeg|.gif", caseSensitive: false);
+
+    return checkUrl.hasMatch(faceUrl) ? faceUrl : "";
   }
 
   Widget build(BuildContext context) {
@@ -67,7 +77,7 @@ class MessageState extends State<Message> {
             actionExtentRatio: 0.25,
             child: ConversionItem(
               name: e.showName,
-              faceUrl: e.faceUrl,
+              faceUrl: checkFaceUrl(e.faceUrl),
               lastMessage: e.lastMessage,
               unreadCount: e.unreadCount,
               type: e.type,
@@ -112,7 +122,7 @@ class ConversionItem extends StatelessWidget {
     this.lastMessage,
     this.unreadCount,
     this.type,
-    this.conversationID,
+    required this.conversationID,
     this.userID,
   });
   final String? name;
@@ -120,13 +130,13 @@ class ConversionItem extends StatelessWidget {
   final V2TimMessage? lastMessage;
   final int? unreadCount;
   final int? type;
-  final String? conversationID;
+  final String conversationID;
   final String? userID;
   test1(context) {
     Navigator.push(
       context,
       new MaterialPageRoute(
-        builder: (context) => Conversion(conversationID!),
+        builder: (context) => Conversion(conversationID),
       ),
     );
   }
